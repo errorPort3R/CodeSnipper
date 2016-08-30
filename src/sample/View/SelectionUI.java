@@ -1,5 +1,6 @@
 package sample.View;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -10,20 +11,20 @@ import javafx.scene.layout.GridPane;
 
 import javafx.stage.Stage;
 import sample.Controller.Controller;
-
-import java.util.ArrayList;
-import java.util.List;
+import sample.Model.SnippetLibrary;
 
 /**
  * Created by jeffryporter on 6/17/16.
  */
 public class SelectionUI implements EventHandler<ActionEvent>
 {
+    SnippetLibrary theSnippetLibrary = SnippetLibrary.getTheSnippetLibrary();
     private Stage selectionStage;
     private ComboBox language;
     private TextField tags;
     private TextField keywords;
     private TextArea code;
+    ObservableList<String> oListLanguages = FXCollections.observableArrayList(Controller.getAllLanguages());
 
 
     public class searchBtnHandler implements EventHandler<ActionEvent>
@@ -56,7 +57,6 @@ public class SelectionUI implements EventHandler<ActionEvent>
     public SelectionUI(Stage stage)
     {
         Controller.initialLoad();
-        ArrayList<String> languages = Controller.getAllLanguages();
         selectionStage = stage;
         GridPane pane = new GridPane();
         GridPane topInsertPane = new GridPane();
@@ -76,9 +76,9 @@ public class SelectionUI implements EventHandler<ActionEvent>
 
         //TOP INSERT PANE START
         Label lbl = new Label("Lang/Lib/Framework:");
-        language = new ComboBox();
-        language.setItems((ObservableList) languages);
+        language = new ComboBox(oListLanguages);
         Button langPlusBtn = new Button("+");
+        TextField newLanguage = new TextField();
         topInsertPane.add(lbl, 0, 1);
         topInsertPane.add(language, 1, 1);
         topInsertPane.add(langPlusBtn,2,1);

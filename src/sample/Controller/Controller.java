@@ -3,6 +3,8 @@ package sample.Controller;
 import sample.Model.CodeSection;
 
 import jodd.json.JsonSerializer;
+import sample.Model.SnippetLibrary;
+
 import java.io.File;
 
 
@@ -10,13 +12,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static sample.Model.SnippetLibrary.theSnippetLibrary;
 
 /**
  * Created by jeffryporter on 8/30/16.
  */
 public class Controller
 {
+    static SnippetLibrary theSnippetLibrary = SnippetLibrary.getTheSnippetLibrary();
     public static final String FILENAME = "snippets.json";
 
     public static void initialLoad()
@@ -56,6 +58,19 @@ public class Controller
     public static ArrayList<String> getAllLanguages()
     {
         ArrayList<String> languages = new ArrayList<>();
+        if(!theSnippetLibrary.hasData())
+        {
+            String[] langList = {"java", "javascript", "php", "c", "c++", "c#", "angular.js", "node.js", "android studio",
+                    "sql", "clojure", "python", "ruby", "react.js", "springMVC", "hibernate"};
+            for(String l: langList)
+            {
+                languages.add(l);
+            }
+        }
+        else
+        {
+
+        }
         return languages;
     }
 
