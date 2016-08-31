@@ -11,10 +11,9 @@ public class CodeSection
     private String writer;
     private String language;
     private ArrayList<String> tags;
-    private boolean matchKeywordExact;
     private String snippet;
     private String comments;
-    private static int counter = 1;
+    private static int counter = 10110;
 
 
     public CodeSection()
@@ -27,7 +26,6 @@ public class CodeSection
         this.writer = writer;
         this.language = language;
         this.tags = tags;
-        this.matchKeywordExact = matchKeywordExact;
         this.snippet = snippet;
         this.comments = comments;
         counter++;
@@ -71,16 +69,6 @@ public class CodeSection
     public void setTags(ArrayList<String> tags)
     {
         this.tags = tags;
-    }
-
-    public boolean isMatchKeywordExact()
-    {
-        return matchKeywordExact;
-    }
-
-    public void setMatchKeywordExact(boolean matchKeywordExact)
-    {
-        this.matchKeywordExact = matchKeywordExact;
     }
 
     public String getSnippet()

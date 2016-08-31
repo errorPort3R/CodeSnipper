@@ -51,4 +51,16 @@ public class SnippetLibrary
             return true;
         }
     }
+
+    public ArrayList<String> getLanguages(ArrayList<String> langs)
+    {
+        for(CodeSection c : snippets)
+        {
+            if(!langs.contains(c.getLanguage()))
+            {
+                langs.add(c.getLanguage());
+            }
+        }
+        return langs;
+    }
 }

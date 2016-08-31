@@ -9,6 +9,7 @@ public class Launcher extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        Controller.initialLoad();
         SelectionUI ui = new SelectionUI(primaryStage);
         ui.show();
     }

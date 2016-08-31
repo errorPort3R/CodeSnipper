@@ -20,8 +20,13 @@ public class Controller
 {
     static SnippetLibrary theSnippetLibrary = SnippetLibrary.getTheSnippetLibrary();
     public static final String FILENAME = "snippets.json";
-
+    private static ArrayList<String> languages;
     public static void initialLoad()
+    {
+
+    }
+
+    public static void addSnippet(String language, String author, String tags, String keywords, String code, String comments)
     {
 
     }
@@ -55,21 +60,23 @@ public class Controller
 
         return codeSearch;
     }
+
     public static ArrayList<String> getAllLanguages()
     {
-        ArrayList<String> languages = new ArrayList<>();
-        if(!theSnippetLibrary.hasData())
+        languages = new ArrayList<>();
+        String[] langList = {"java", "javascript", "php", "c", "c++", "c#", "angular.js", "node.js", "android studio",
+                "sql", "clojure", "python", "ruby", "react.js", "springMVC"};
+        for(String l: langList)
         {
-            String[] langList = {"java", "javascript", "php", "c", "c++", "c#", "angular.js", "node.js", "android studio",
-                    "sql", "clojure", "python", "ruby", "react.js", "springMVC", "hibernate"};
-            for(String l: langList)
+            languages.add(l);
+        }
+        if (theSnippetLibrary.hasData())
+        {
+            ArrayList<String> snipLangList = theSnippetLibrary.getLanguages(languages);
+            for(String l: snipLangList)
             {
                 languages.add(l);
             }
-        }
-        else
-        {
-
         }
         return languages;
     }

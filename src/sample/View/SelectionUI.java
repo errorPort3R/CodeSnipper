@@ -13,6 +13,8 @@ import javafx.stage.Stage;
 import sample.Controller.Controller;
 import sample.Model.SnippetLibrary;
 
+import java.util.Collections;
+
 /**
  * Created by jeffryporter on 6/17/16.
  */
@@ -21,9 +23,12 @@ public class SelectionUI implements EventHandler<ActionEvent>
     SnippetLibrary theSnippetLibrary = SnippetLibrary.getTheSnippetLibrary();
     private Stage selectionStage;
     private ComboBox language;
+    private TextField newLanguage;
+    private TextField author;
     private TextField tags;
     private TextField keywords;
     private TextArea code;
+    private TextArea comments;
     ObservableList<String> oListLanguages = FXCollections.observableArrayList(Controller.getAllLanguages());
 
 
@@ -31,8 +36,8 @@ public class SelectionUI implements EventHandler<ActionEvent>
     {
         public void handle(ActionEvent event)
         {
-
-
+            Controller.addSnippet(language.getValue().toString(), author.getText(), tags.getText(), keywords.getText(), code.getText(), comments.getText());
+            Controller.saveFile();
         }
     }
 
@@ -48,15 +53,14 @@ public class SelectionUI implements EventHandler<ActionEvent>
     {
         public void handle(ActionEvent event)
         {
-
+            oListLanguages.add(newLanguage.getText());
+            Collections.sort(oListLanguages);
+            newLanguage.clear();
         }
     }
 
-
-
     public SelectionUI(Stage stage)
     {
-        Controller.initialLoad();
         selectionStage = stage;
         GridPane pane = new GridPane();
         GridPane topInsertPane = new GridPane();
@@ -76,30 +80,42 @@ public class SelectionUI implements EventHandler<ActionEvent>
 
         //TOP INSERT PANE START
         Label lbl = new Label("Lang/Lib/Framework:");
+        Collections.sort(oListLanguages);
         language = new ComboBox(oListLanguages);
+        language.setPromptText("Select");
         Button langPlusBtn = new Button("+");
-        TextField newLanguage = new TextField();
+        newLanguage = new TextField();
+        newLanguage.setPromptText("New Language");
         topInsertPane.add(lbl, 0, 1);
         topInsertPane.add(language, 1, 1);
         topInsertPane.add(langPlusBtn,2,1);
+        topInsertPane.add(newLanguage, 3, 1);
+
+        lbl = new Label("Author:");
+        author = new TextField();
+        topInsertPane.add(lbl, 0, 2);
+        topInsertPane.add(author, 1, 2);
 
         lbl = new Label("Tags:");
         tags = new TextField();
-        topInsertPane.add(lbl, 0, 2);
-        topInsertPane.add(tags, 1, 2);
+        topInsertPane.add(lbl, 0, 3);
+        topInsertPane.add(tags, 1, 3);
 
         lbl = new Label("Keywords:");
         keywords = new TextField();
-        topInsertPane.add(lbl, 0, 3);
-        topInsertPane.add(keywords, 1, 3);
+        topInsertPane.add(lbl, 0, 4);
+        topInsertPane.add(keywords, 1, 4);
         //TOP INSERT PANE END
 
         pane.add(topInsertPane, 0,1);
 
-        lbl = new Label("Code:");
         code = new TextArea();
-        pane.add(lbl, 0, 2);
-        pane.add(code, 0, 3);
+        code.setPromptText("Code");
+        pane.add(code, 0, 2);
+
+        comments = new TextArea();
+        comments.setPromptText("Comments");
+        pane.add(comments, 0, 3);
 
         Button searchBtn = new Button("Search");
         Button addBtn = new Button("Add");
