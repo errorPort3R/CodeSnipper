@@ -1,5 +1,6 @@
 package sample.Controller;
 
+import jodd.json.JsonParser;
 import sample.Model.CodeSection;
 
 import jodd.json.JsonSerializer;
@@ -21,14 +22,43 @@ public class Controller
     static SnippetLibrary theSnippetLibrary = SnippetLibrary.getTheSnippetLibrary();
     public static final String FILENAME = "snippets.json";
     private static ArrayList<String> languages;
+
     public static void initialLoad()
     {
-
+        File f = new File(FILENAME);
+        JsonParser p = new JsonParser();
+        CodeSection codeSnippet = p.parse(body,CodeSection.class);
     }
 
-    public static void addSnippet(String language, String author, String tags, String keywords, String code, String comments)
+    public static boolean addSnippet(String language, String newLanguage, String author, String tags, String keywords, String code, String comments)
     {
+        boolean valid = false;
+        ArrayList<String> tagsList = new ArrayList<>();
 
+        //get spaced out tags and put in ArrayList
+        if (tags.length() > 0)
+        {
+            String fields[] = tags.split(" ");
+            for(String f:fields)
+            {
+                tagsList.add(f);
+            }
+        }
+
+        //validate entry and add to library if it is valid
+        if (newLanguage.isEmpty() && language.length() > 0 && code.length() > 0)
+        {
+            theSnippetLibrary.addSnippet(new CodeSection(author, language, tagsList, code, comments));
+            valid = true;
+            saveFile();
+        }
+        else if(!newLanguage.isEmpty() && language.length() == 0 && code.length() > 0)
+        {
+            theSnippetLibrary.addSnippet(new CodeSection(author, newLanguage, tagsList, code, comments));
+            valid = true;
+            saveFile();
+        }
+        return valid;
     }
 
     public static void saveFile()
@@ -48,12 +78,13 @@ public class Controller
         }
     }
 
-    public static void editSnippets()
+    public static boolean editSnippets()
     {
-
+        boolean valid = false;
+        return valid;
     }
 
-    public static ArrayList<CodeSection> searchSnippets(String tags, String Keywords, String Code, String Lang)
+    public static ArrayList<CodeSection> searchSnippets(String tags, String keywords, boolean isInclusive, String lang)
     {
         ArrayList<CodeSection> codeSearch = new ArrayList<>();
 

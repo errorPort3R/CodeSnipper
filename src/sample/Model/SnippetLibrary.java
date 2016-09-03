@@ -63,4 +63,17 @@ public class SnippetLibrary
         }
         return langs;
     }
+
+    public ArrayList<CodeSection> getSnippets()
+    {
+        return snippets;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "SnippetLibrary{" +
+                "snippets=" + snippets +
+                '}';
+    }
 }

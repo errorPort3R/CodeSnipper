@@ -31,13 +31,11 @@ public class SelectionUI implements EventHandler<ActionEvent>
     private TextArea comments;
     ObservableList<String> oListLanguages = FXCollections.observableArrayList(Controller.getAllLanguages());
 
-
     public class searchBtnHandler implements EventHandler<ActionEvent>
     {
         public void handle(ActionEvent event)
         {
-            Controller.addSnippet(language.getValue().toString(), author.getText(), tags.getText(), keywords.getText(), code.getText(), comments.getText());
-            Controller.saveFile();
+
         }
     }
 
@@ -45,7 +43,35 @@ public class SelectionUI implements EventHandler<ActionEvent>
     {
         public void handle(ActionEvent event)
         {
-
+            if (language.getValue() == null)
+            {
+                language.setValue("");
+            }
+            boolean valid = Controller.addSnippet(language.getValue().toString(),newLanguage.getText(), author.getText(), tags.getText(), keywords.getText(), code.getText(), comments.getText());
+            //Add snippet if it's valid
+            if(valid)
+            {
+                language.setPromptText("Language");
+                if(newLanguage.getText().length() > 0)
+                {
+                    oListLanguages.add(newLanguage.getText());
+                    Collections.sort(oListLanguages);
+                }
+                newLanguage.clear();
+                author.clear();
+                tags.clear();
+                code.clear();
+                comments.clear();
+            }
+            //Alertbox for a submission error.
+            else
+            {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("ERROR!!!!!");
+                alert.setHeaderText("Not a valid Snippet Submission!");
+                alert.setContentText("You must have code and a language selected.");
+                alert.showAndWait();
+            }
         }
     }
 
@@ -79,48 +105,52 @@ public class SelectionUI implements EventHandler<ActionEvent>
         bottomInsertPane.setPadding(new Insets(10,10,10,10));
 
         //TOP INSERT PANE START
-        Label lbl = new Label("Lang/Lib/Framework:");
+        Button searchBtn = new Button("Search");
+        Button addBtn = new Button("Add Snippet");
+        ToggleGroup searchGroup = new ToggleGroup();
+        CheckBox inclusive = new CheckBox("Inclusive Search");
+
         Collections.sort(oListLanguages);
         language = new ComboBox(oListLanguages);
-        language.setPromptText("Select");
+        language.setPromptText("Language");
         Button langPlusBtn = new Button("+");
         newLanguage = new TextField();
         newLanguage.setPromptText("New Language");
-        topInsertPane.add(lbl, 0, 1);
+        topInsertPane.add(searchBtn, 0, 0);
+        topInsertPane.add(inclusive, 1, 0);
+        topInsertPane.add(addBtn, 4, 0);
+
+        keywords = new TextField();
+        keywords.setPromptText("Code Search Keywords");
+        topInsertPane.add(keywords, 1, 4);
         topInsertPane.add(language, 1, 1);
         topInsertPane.add(langPlusBtn,2,1);
         topInsertPane.add(newLanguage, 3, 1);
 
-        lbl = new Label("Author:");
         author = new TextField();
-        topInsertPane.add(lbl, 0, 2);
+        author.setPromptText("Author");
         topInsertPane.add(author, 1, 2);
 
-        lbl = new Label("Tags:");
         tags = new TextField();
-        topInsertPane.add(lbl, 0, 3);
+        tags.setPromptText("Tags");
         topInsertPane.add(tags, 1, 3);
 
-        lbl = new Label("Keywords:");
-        keywords = new TextField();
-        topInsertPane.add(lbl, 0, 4);
-        topInsertPane.add(keywords, 1, 4);
+
         //TOP INSERT PANE END
 
         pane.add(topInsertPane, 0,1);
 
         code = new TextArea();
         code.setPromptText("Code");
-        pane.add(code, 0, 2);
+        code.setMinWidth(300.0);
+        bottomInsertPane.add(code, 0, 2);
 
         comments = new TextArea();
         comments.setPromptText("Comments");
-        pane.add(comments, 0, 3);
+        comments.setMaxWidth(150.0);
+        bottomInsertPane.add(comments, 1, 2);
 
-        Button searchBtn = new Button("Search");
-        Button addBtn = new Button("Add");
-        pane.add(searchBtn, 0, 0);
-        bottomInsertPane.add(addBtn, 0, 0);
+
 
         pane.add(bottomInsertPane, 0,4);
 

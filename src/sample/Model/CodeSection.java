@@ -20,7 +20,7 @@ public class CodeSection
     {
     }
 
-    public CodeSection(String writer, String language, ArrayList<String> tags, boolean matchKeywordExact, String snippet, String comments)
+    public CodeSection(String writer, String language, ArrayList<String> tags, String snippet, String comments)
     {
         this.id = counter;
         this.writer = writer;
@@ -89,5 +89,18 @@ public class CodeSection
     public void setComments(String comments)
     {
         this.comments = comments;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "CodeSection{" +
+                "id=" + id +
+                ", writer='" + writer + '\'' +
+                ", language='" + language + '\'' +
+                ", tags=" + tags +
+                ", snippet='" + snippet + '\'' +
+                ", comments='" + comments + '\'' +
+                '}';
     }
 }
