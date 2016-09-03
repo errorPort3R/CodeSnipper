@@ -87,10 +87,14 @@ public class Controller
     }
 
     //edit a snippet
-    public static boolean editSnippets()
+    public static boolean editSnippets(CodeSection snippet)
     {
-        boolean valid = false;
-        return valid;
+        theSnippetLibrary.updateSnippet(snippet);
+        if(snippet.toString().equals(theSnippetLibrary.getSnippetById(snippet.getId())))
+        {
+            return true;
+        }
+        return false;
     }
 
     //search snippets

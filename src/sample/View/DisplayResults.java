@@ -24,24 +24,24 @@ public class DisplayResults implements EventHandler<ActionEvent>
     private Stage theStage;
     private ListView<CodeSection> snippetList;
     private CodeSection snippet;
+    private Button viewBtn;
+    private Button updateBtn;
+    private Button deleteBtn;
     private Button cancelBtn;
-    private Label fNameLabel;
-    private Label lNameLabel;
-    private Label majorLabel;
-    private Text fNameText;
-    private Text lNameText;
+
 
     public class updateButtonHandler implements EventHandler<ActionEvent>
     {
         public void handle(ActionEvent event)
         {
-
+            snippet= new CodeSection();
+            snippet = snippetList.selectionModelProperty().getValue().getSelectedItem();
+            Controller.editSnippets(snippet);
 
             theStage.hide();
             UpdateSnippet updatepage = new UpdateSnippet();
             updatepage.show();
         }
-
     }
 
     public class viewButtonHandler implements EventHandler<ActionEvent>
@@ -77,7 +77,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
     }
 
-    public DisplayResults( Stage stage, ArrayList<CodeSection> codeSearchList)
+    public DisplayResults(Stage stage, ArrayList<CodeSection> codeSearchList)
     {
 
         theStage = new Stage();
@@ -92,29 +92,21 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
         ObservableList<CodeSection> olCodeSearchList = FXCollections.observableArrayList(codeSearchList);
         snippetList.setItems(olCodeSearchList);
-
         pane.add(snippetList, 0 ,0);
 
-        lNameText = new Text(lName);
-        lNameLabel = new Label("Last Name:");
-        pane.add(lNameLabel, 0, 1);
-        pane.add(lNameText, 1, 1);
+        viewBtn = new Button("View");
+        updateBtn = new Button("Edit");
+        deleteBtn = new Button("Delete");
+        cancelBtn = new Button("Go Back");
+        pane.add(viewBtn, 0, 1);
+        pane.add(updateBtn, 1, 1);
+        pane.add(deleteBtn, 2, 1);
+        pane.add(cancelBtn, 3, 1);
 
-
-        majorLabel = new Label("Major");
-        pane.add(majorLabel, 0, 2);
-        pane.add(majorCbo, 1, 2);
-
-        saveBtn = new Button("Save");
-        cancelBtn = new Button("Cancel");
-        pane.add(saveBtn, 0, 3);
-        pane.add(cancelBtn, 1, 3);
-
-        saveBtn.setOnAction(new saveButtonHandler());
+        viewBtn.setOnAction(new viewButtonHandler());
+        updateBtn.setOnAction(new updateButtonHandler());
+        deleteBtn.setOnAction(new deleteButtonHandler());
         cancelBtn.setOnAction(this);
-
-
-        // roomsLV.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     public void show()

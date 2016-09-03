@@ -69,6 +69,18 @@ public class SnippetLibrary
         return snippets;
     }
 
+    public CodeSection getSnippetById(Integer id)
+    {
+        for (CodeSection c : snippets)
+        {
+            if(c.getId() == id)
+            {
+                return c;
+            }
+        }
+        return null;
+    }
+
     @Override
     public String toString()
     {
