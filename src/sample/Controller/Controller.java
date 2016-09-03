@@ -102,6 +102,7 @@ public class Controller
         return codeSearch;
     }
 
+    //create an arraylist of languages
     public static ArrayList<String> getAllLanguages()
     {
         languages = new ArrayList<>();
@@ -120,6 +121,17 @@ public class Controller
             }
         }
         return languages;
+    }
+
+    //delete snippet
+    public static boolean deleteSnippet(CodeSection snippet)
+    {
+        CodeSection codeRemoved = theSnippetLibrary.removeSnippet(snippet.getId());
+        if (codeRemoved.getId() == snippet.getId())
+        {
+            return true;
+        }
+        return false;
     }
 
 
