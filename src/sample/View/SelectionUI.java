@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import sample.Controller.Controller;
 import sample.Model.SnippetLibrary;
 
+import java.io.FileNotFoundException;
 import java.util.Collections;
 
 /**
@@ -85,8 +86,9 @@ public class SelectionUI implements EventHandler<ActionEvent>
         }
     }
 
-    public SelectionUI(Stage stage)
+    public SelectionUI(Stage stage) throws FileNotFoundException
     {
+        Controller.initialLoad();
         selectionStage = stage;
         GridPane pane = new GridPane();
         GridPane topInsertPane = new GridPane();

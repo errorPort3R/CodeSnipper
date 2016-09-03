@@ -6,12 +6,11 @@ import sample.Model.CodeSection;
 import jodd.json.JsonSerializer;
 import sample.Model.SnippetLibrary;
 
-import java.io.File;
+import java.io.*;
 
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 
 /**
@@ -19,17 +18,25 @@ import java.util.ArrayList;
  */
 public class Controller
 {
+
     static SnippetLibrary theSnippetLibrary = SnippetLibrary.getTheSnippetLibrary();
     public static final String FILENAME = "snippets.json";
     private static ArrayList<String> languages;
 
-    public static void initialLoad()
+    //initial load from JSON file
+    public static void initialLoad() throws FileNotFoundException
     {
         File f = new File(FILENAME);
-        JsonParser p = new JsonParser();
-        CodeSection codeSnippet = p.parse(body,CodeSection.class);
+        if (f.canRead())
+        {
+            Scanner fileScanner = new Scanner(f);
+            String json = fileScanner.nextLine();
+            JsonParser p = new JsonParser();
+            theSnippetLibrary = p.parse(json, SnippetLibrary.class);
+        }
     }
 
+    //add a new snippet
     public static boolean addSnippet(String language, String newLanguage, String author, String tags, String keywords, String code, String comments)
     {
         boolean valid = false;
@@ -61,6 +68,7 @@ public class Controller
         return valid;
     }
 
+    //save current state of theSnippetLibrary
     public static void saveFile()
     {
         JsonSerializer serializer = new JsonSerializer();
@@ -78,12 +86,14 @@ public class Controller
         }
     }
 
+    //edit a snippet
     public static boolean editSnippets()
     {
         boolean valid = false;
         return valid;
     }
 
+    //search snippets
     public static ArrayList<CodeSection> searchSnippets(String tags, String keywords, boolean isInclusive, String lang)
     {
         ArrayList<CodeSection> codeSearch = new ArrayList<>();
@@ -104,9 +114,9 @@ public class Controller
         if (theSnippetLibrary.hasData())
         {
             ArrayList<String> snipLangList = theSnippetLibrary.getLanguages(languages);
-            for(String l: snipLangList)
+            for(String lang: snipLangList)
             {
-                languages.add(l);
+                languages.add(lang);
             }
         }
         return languages;
