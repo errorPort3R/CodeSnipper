@@ -10,7 +10,9 @@ import java.io.*;
 
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 
 /**
@@ -98,11 +100,93 @@ public class Controller
     }
 
     //search snippets
-    public static ArrayList<CodeSection> searchSnippets(String tags, String keywords, boolean isInclusive, String lang)
+    public static ArrayList<CodeSection> searchSnippets(String author, String tags, String keywords, String lang, boolean isInclusive)
     {
         ArrayList<CodeSection> codeSearch = new ArrayList<>();
+        ArrayList<String> tagsList = new ArrayList<>();
+        //check for null values
+        if (author == null){author = "";}
+        if (tags == null){tags = "";}
+        if (keywords == null){keywords = "";}
+        if (lang == null){lang = "";}
 
+        if (tags.length() > 0)
+        {
+            String fields[] = tags.split(" ");
+            for(String f:fields)
+            {
+                tagsList.add(f);
+            }
+        }
 
+        if (isInclusive)
+        {
+            for (CodeSection code : theSnippetLibrary.getSnippets())
+            {
+                if (tags.length() > 0)
+                {
+                    for (String t : tagsList)
+                    if (code.getWriter().equalsIgnoreCase(author) ||
+                            code.getTags().contains(t.toLowerCase()) ||
+                            code.getLanguage().equalsIgnoreCase(lang) ||
+                            code.getSnippet().contains(keywords) ||
+                            code.getComments().contains(keywords))
+                    {
+                        codeSearch.add(code);
+                    }
+                }
+            }
+
+        }
+        else
+        {
+            for(CodeSection code : theSnippetLibrary.getSnippets())
+            {
+                if (tags.length() > 0)
+                {
+                    for (String t : tagsList)
+                    {
+                        if (code.getTags().contains(t.toLowerCase()))
+                        {
+                            codeSearch.add(code);
+                        }
+                    }
+                }
+                if(author.length() > 0)
+                {
+                    if(code.getWriter().equalsIgnoreCase(author))
+                    {
+                        codeSearch.add(code);
+                    }
+                    else
+                    {
+                        codeSearch.remove(code);
+                    }
+                }
+                if(lang.length() > 0)
+                {
+                    if(code.getLanguage().equalsIgnoreCase(lang))
+                    {
+                        codeSearch.add(code);
+                    }
+                    else
+                    {
+                        codeSearch.remove(code);
+                    }
+                }
+                if(keywords.length() > 0)
+                {
+                    if(code.getSnippet().equalsIgnoreCase(keywords) || code.getComments().equalsIgnoreCase(keywords))
+                    {
+                        codeSearch.add(code);
+                    }
+                    else
+                    {
+                        codeSearch.remove(code);
+                    }
+                }
+            }
+        }
         return codeSearch;
     }
 

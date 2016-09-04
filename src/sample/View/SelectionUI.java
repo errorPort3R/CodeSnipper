@@ -11,9 +11,11 @@ import javafx.scene.layout.GridPane;
 
 import javafx.stage.Stage;
 import sample.Controller.Controller;
+import sample.Model.CodeSection;
 import sample.Model.SnippetLibrary;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Collections;
 
 /**
@@ -30,13 +32,32 @@ public class SelectionUI implements EventHandler<ActionEvent>
     private TextField keywords;
     private TextArea code;
     private TextArea comments;
+    private CheckBox inclusive;
     ObservableList<String> oListLanguages = FXCollections.observableArrayList(Controller.getAllLanguages());
 
     public class searchBtnHandler implements EventHandler<ActionEvent>
     {
         public void handle(ActionEvent event)
         {
+            //get variables for search
+            boolean selectedInclusive = false;
+            String lang = null;
+            if(!language.getValue().toString().isEmpty())
+            {
+                lang = language.getValue().toString();
+            }
+            else if (!newLanguage.getText().isEmpty())
+            {
+                lang = newLanguage.getText();
+            }
+            if (inclusive.isSelected())
+            {
+                selectedInclusive = true;
+            }
 
+            ArrayList<CodeSection> searchedCode = Controller.searchSnippets(author.getText(), tags.getText(), keywords.getText(), lang, selectedInclusive);
+            DisplayResults ds = new DisplayResults(searchedCode);
+            ds.show();
         }
     }
 
@@ -110,7 +131,7 @@ public class SelectionUI implements EventHandler<ActionEvent>
         Button searchBtn = new Button("Search");
         Button addBtn = new Button("Add Snippet");
         ToggleGroup searchGroup = new ToggleGroup();
-        CheckBox inclusive = new CheckBox("Inclusive Search");
+        inclusive = new CheckBox("Inclusive Search");
 
         Collections.sort(oListLanguages);
         language = new ComboBox(oListLanguages);

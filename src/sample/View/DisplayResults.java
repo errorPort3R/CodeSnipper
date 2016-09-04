@@ -23,6 +23,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
 {
     private Stage theStage;
     private ListView<CodeSection> snippetList;
+    ObservableList<CodeSection> olCodeSearchList;
     private CodeSection snippet;
     private Button viewBtn;
     private Button updateBtn;
@@ -37,8 +38,6 @@ public class DisplayResults implements EventHandler<ActionEvent>
             snippet= new CodeSection();
             snippet = snippetList.selectionModelProperty().getValue().getSelectedItem();
             Controller.editSnippets(snippet);
-
-            theStage.hide();
             UpdateSnippet updatepage = new UpdateSnippet();
             updatepage.show();
         }
@@ -77,7 +76,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
     }
 
-    public DisplayResults(Stage stage, ArrayList<CodeSection> codeSearchList)
+    public DisplayResults(ArrayList<CodeSection> codeSearchList)
     {
 
         theStage = new Stage();
@@ -90,7 +89,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
         pane.setPadding(new Insets(10,10,10,10));
 
 
-        ObservableList<CodeSection> olCodeSearchList = FXCollections.observableArrayList(codeSearchList);
+        olCodeSearchList = FXCollections.observableArrayList(codeSearchList);
         snippetList.setItems(olCodeSearchList);
         pane.add(snippetList, 0 ,0);
 
