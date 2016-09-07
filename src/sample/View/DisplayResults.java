@@ -23,7 +23,7 @@ import java.util.Optional;
 public class DisplayResults implements EventHandler<ActionEvent>
 {
     private Stage theStage;
-    private ListView<CodeSection> snippetList;
+    private ListView<CodeSection> snippetList = new ListView<>();
     ObservableList<CodeSection> olCodeSearchList;
     private CodeSection snippet;
     private Button viewBtn;
@@ -74,12 +74,10 @@ public class DisplayResults implements EventHandler<ActionEvent>
                 alert.close();
             }
         }
-
     }
 
     public DisplayResults(ArrayList<CodeSection> codeSearchList)
     {
-
         theStage = new Stage();
         GridPane pane = new GridPane();
         Scene scene = new Scene(pane);
@@ -89,13 +87,11 @@ public class DisplayResults implements EventHandler<ActionEvent>
         pane.setVgap(5);
         pane.setPadding(new Insets(10,10,10,10));
 
-
         olCodeSearchList = FXCollections.observableArrayList(codeSearchList);
         snippetList.setItems(olCodeSearchList);
         snippetList.setCellFactory(ComboBoxListCell.forListView(olCodeSearchList));
 
-
-        pane.getChildren().add(snippetList, 0 ,0);
+        pane.add(snippetList, 0 ,0);
 
         viewBtn = new Button("View");
         updateBtn = new Button("Edit");
