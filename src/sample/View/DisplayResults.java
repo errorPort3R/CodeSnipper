@@ -7,6 +7,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -91,7 +92,10 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
         olCodeSearchList = FXCollections.observableArrayList(codeSearchList);
         snippetList.setItems(olCodeSearchList);
-        pane.add(snippetList, 0 ,0);
+        snippetList.setCellFactory(ComboBoxListCell.forListView(olCodeSearchList));
+
+
+        pane.getChildren().add(snippetList, 0 ,0);
 
         viewBtn = new Button("View");
         updateBtn = new Button("Edit");
