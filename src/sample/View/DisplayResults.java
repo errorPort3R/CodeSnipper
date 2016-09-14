@@ -41,9 +41,16 @@ public class DisplayResults implements EventHandler<ActionEvent>
         {
             snippet= new CodeSection();
             snippet = snippetList.selectionModelProperty().getValue().getSelectedItem();
-            Controller.editSnippets(snippet);
-            UpdateSnippet updatepage = new UpdateSnippet();
-            updatepage.show();
+            if(snippet == null)
+            {
+                //TODO alertbox
+            }
+            else
+            {
+                Controller.editSnippets(snippet);
+                UpdateSnippet updatepage = new UpdateSnippet();
+                updatepage.show();
+            }
         }
     }
 
@@ -90,6 +97,8 @@ public class DisplayResults implements EventHandler<ActionEvent>
         ScrollPane scrollPane = new ScrollPane();
         HBox Hbox1 = new HBox();
         GridPane insetPane = new GridPane();
+        GridPane insetInnerPane =  new GridPane();
+        GridPane outsetPane = new GridPane();
         Hbox1.getChildren().add(0, insetPane);
         Scene scene = new Scene(pane);
         theStage.setScene(scene);
@@ -97,6 +106,8 @@ public class DisplayResults implements EventHandler<ActionEvent>
         pane.setHgap(5);
         pane.setVgap(5);
         pane.setPadding(new Insets(10,10,10,10));
+        bottomPane.setHgap(5);
+        bottomPane.setVgap(5);
 
         olCodeSearchList = FXCollections.observableArrayList(codeSearchList);
         ArrayList<Node> scrollListNodes = new ArrayList<>();
@@ -106,31 +117,35 @@ public class DisplayResults implements EventHandler<ActionEvent>
             Text id = new Text();
             id.setText("ID: " + c.getId());
             Text language = new Text();
-            id.setText("Lang: " + c.getLanguage());
+            language.setText("Lang: " + c.getLanguage());
             Text tags = new Text();
-            id.setText("Tags: " + c.getTags());
+            tags.setText("Tags: " + c.getTags());
             Text writer = new Text();
-            id.setText("Writer: " + c.getWriter());
+            writer.setText("Writer: " + c.getWriter());
             Text code = new Text();
-            id.setText(c.getSnippet());
-            insetPane.add(id, 0, 0);
-            insetPane.add(language, 1, 0);
-            insetPane.add(tags, 2, 0);
-            insetPane.add(writer, 3, 0);
-            insetPane.add(code, 0, 1, 100, 4);
-            scrollListNodes.add(i, insetPane);
-            insetPane = new GridPane();
+            code.setText(c.getSnippet());
+            insetInnerPane.add(id, 0, 0);
+            insetInnerPane.add(language, 0, 1);
+            insetInnerPane.add(tags, 0, 2);
+            insetInnerPane.add(writer, 0, 3);
+            insetPane.add(insetInnerPane, 0, 0);
+            insetPane.add(code, 1, 0);
+            insetPane.setGridLinesVisible(true);
+            outsetPane.add(insetPane, 0,i);
+
             i++;
             int j = i%2;
             insetPane.setStyle("-fx-background-color: white;");
-            if(j == 0)
+            if(j == 1)
             {
                 insetPane.setStyle("-fx-background-color: lightgrey;");
             }
-            scrollPane.setContent(insetPane);
+            insetPane = new GridPane();
+            insetInnerPane = new GridPane();
+
         }
 
-
+        scrollPane.setContent(outsetPane);
         topPane.add(scrollPane, 0 ,0);
 
         viewBtn = new Button("View");
