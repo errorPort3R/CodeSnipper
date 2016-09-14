@@ -117,17 +117,19 @@ public class DisplayResults implements EventHandler<ActionEvent>
             insetPane.add(language, 1, 0);
             insetPane.add(tags, 2, 0);
             insetPane.add(writer, 3, 0);
-            insetPane.add(code, 0, 1, 1, 4);
+            insetPane.add(code, 0, 1, 100, 4);
             scrollListNodes.add(i, insetPane);
             insetPane = new GridPane();
-            i = (i+1)%2;
+            i++;
+            int j = i%2;
             insetPane.setStyle("-fx-background-color: white;");
-            if(i == 0)
+            if(j == 0)
             {
-                insetPane.setStyle("-fx-background-color: light grey;");
+                insetPane.setStyle("-fx-background-color: lightgrey;");
             }
-
+            scrollPane.setContent(insetPane);
         }
+
 
         topPane.add(scrollPane, 0 ,0);
 
