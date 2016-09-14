@@ -8,13 +8,10 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import sample.Controller.Controller;
 import sample.Model.CodeSection;
 
@@ -86,12 +83,14 @@ public class DisplayResults implements EventHandler<ActionEvent>
     {
         theStage = new Stage();
         GridPane pane = new GridPane();
+        GridPane topPane = new GridPane();
+        GridPane bottomPane = new GridPane();
+        pane.add(topPane, 0, 0);
+        pane.add(bottomPane, 0, 1);
         ScrollPane scrollPane = new ScrollPane();
         HBox Hbox1 = new HBox();
-        VBox Vbox1 = new VBox();
-        VBox Vbox2 = new VBox();
-        Hbox1.getChildren().add(0, Vbox1);
-        Hbox1.getChildren().add(2, Vbox2);
+        GridPane insetPane = new GridPane();
+        Hbox1.getChildren().add(0, insetPane);
         Scene scene = new Scene(pane);
         theStage.setScene(scene);
         theStage.setTitle("Search Results");
@@ -104,21 +103,42 @@ public class DisplayResults implements EventHandler<ActionEvent>
         int i = 0;
         for(CodeSection c: olCodeSearchList)
         {
+            Text id = new Text();
+            id.setText("ID: " + c.getId());
+            Text language = new Text();
+            id.setText("Lang: " + c.getLanguage());
+            Text tags = new Text();
+            id.setText("Tags: " + c.getTags());
+            Text writer = new Text();
+            id.setText("Writer: " + c.getWriter());
+            Text code = new Text();
+            id.setText(c.getSnippet());
+            insetPane.add(id, 0, 0);
+            insetPane.add(language, 1, 0);
+            insetPane.add(tags, 2, 0);
+            insetPane.add(writer, 3, 0);
+            insetPane.add(code, 0, 1, 1, 4);
+            scrollListNodes.add(i, insetPane);
+            insetPane = new GridPane();
+            i = (i+1)%2;
+            insetPane.setStyle("-fx-background-color: white;");
+            if(i == 0)
+            {
+                insetPane.setStyle("-fx-background-color: light grey;");
+            }
 
-
-            i++;
         }
 
-        pane.add(scrollPane, 0 ,0);
+        topPane.add(scrollPane, 0 ,0);
 
         viewBtn = new Button("View");
         updateBtn = new Button("Edit");
         deleteBtn = new Button("Delete");
         cancelBtn = new Button("Go Back");
-        pane.add(viewBtn, 0, 1);
-        pane.add(updateBtn, 1, 1);
-        pane.add(deleteBtn, 2, 1);
-        pane.add(cancelBtn, 3, 1);
+        bottomPane.add(viewBtn, 0, 0);
+        bottomPane.add(updateBtn, 1, 0);
+        bottomPane.add(deleteBtn, 2, 0);
+        bottomPane.add(cancelBtn, 3, 0);
 
         viewBtn.setOnAction(new viewButtonHandler());
         updateBtn.setOnAction(new updateButtonHandler());
