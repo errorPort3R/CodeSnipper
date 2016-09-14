@@ -5,17 +5,23 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import sample.Controller.Controller;
 import sample.Model.CodeSection;
 
 import java.util.ArrayList;
 import java.util.Optional;
+
+import static javafx.scene.input.KeyCode.H;
 
 /**
  * Created by jeffryporter on 8/30/16.
@@ -23,7 +29,7 @@ import java.util.Optional;
 public class DisplayResults implements EventHandler<ActionEvent>
 {
     private Stage theStage;
-    private ListView<CodeSection> snippetList = new ListView<>();
+    private TableView<CodeSection> snippetList = new TableView<>();
     ObservableList<CodeSection> olCodeSearchList;
     private CodeSection snippet;
     private Button viewBtn;
@@ -80,6 +86,12 @@ public class DisplayResults implements EventHandler<ActionEvent>
     {
         theStage = new Stage();
         GridPane pane = new GridPane();
+        ScrollPane scrollPane = new ScrollPane();
+        HBox Hbox1 = new HBox();
+        VBox Vbox1 = new VBox();
+        VBox Vbox2 = new VBox();
+        Hbox1.getChildren().add(0, Vbox1);
+        Hbox1.getChildren().add(2, Vbox2);
         Scene scene = new Scene(pane);
         theStage.setScene(scene);
         theStage.setTitle("Search Results");
@@ -88,10 +100,16 @@ public class DisplayResults implements EventHandler<ActionEvent>
         pane.setPadding(new Insets(10,10,10,10));
 
         olCodeSearchList = FXCollections.observableArrayList(codeSearchList);
-        snippetList.setItems(olCodeSearchList);
-        snippetList.setCellFactory(ComboBoxListCell.forListView(olCodeSearchList));
+        ArrayList<Node> scrollListNodes = new ArrayList<>();
+        int i = 0;
+        for(CodeSection c: olCodeSearchList)
+        {
 
-        pane.add(snippetList, 0 ,0);
+
+            i++;
+        }
+
+        pane.add(scrollPane, 0 ,0);
 
         viewBtn = new Button("View");
         updateBtn = new Button("Edit");
