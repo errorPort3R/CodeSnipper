@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
@@ -128,9 +129,15 @@ public class DisplayResults implements EventHandler<ActionEvent>
             insetInnerPane.add(language, 0, 1);
             insetInnerPane.add(tags, 0, 2);
             insetInnerPane.add(writer, 0, 3);
+            ColumnConstraints column1 = new ColumnConstraints();
+            column1.setPercentWidth(30);
+            ColumnConstraints column2 = new ColumnConstraints();
+            column2.setPercentWidth(70);
+            insetPane.getColumnConstraints().addAll(column1, column2);
             insetPane.add(insetInnerPane, 0, 0);
             insetPane.add(code, 1, 0);
             insetPane.setGridLinesVisible(true);
+            outsetPane.setPrefSize(800, 400);
             outsetPane.add(insetPane, 0,i);
 
             i++;
