@@ -8,33 +8,34 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import sample.Controller.Controller;
 import sample.Model.CodeSection;
 
+import java.lang.Character.UnicodeBlock;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static javafx.scene.input.KeyCode.H;
+import static javafx.scene.input.KeyCode.U;
 
 /**
  * Created by jeffryporter on 8/30/16.
  */
+
 public class DisplayResults implements EventHandler<ActionEvent>
 {
+    public static UnicodeBlock MISCELLANEOUS_SYMBOLS_AND_PICTOGRAPHS;
     private Stage theStage;
     private TableView<CodeSection> snippetList = new TableView<>();
     ObservableList<CodeSection> olCodeSearchList;
     private CodeSection snippet;
-    private Button viewBtn;
-    private Button updateBtn;
-    private Button deleteBtn;
-    private Button cancelBtn;
-
+    private ArrayList<Button> viewBtnList;
+    private ArrayList<Button> updateBtnList;
+    private ArrayList<Button> deleteBtnList;
 
     public class updateButtonHandler implements EventHandler<ActionEvent>
     {
@@ -61,8 +62,8 @@ public class DisplayResults implements EventHandler<ActionEvent>
         {
 
             theStage.hide();
-            ViewSnippet updatepage = new ViewSnippet();
-            updatepage.show();
+            ViewSnippet viewpage = new ViewSnippet();
+            viewpage.show();
         }
 
     }
@@ -87,6 +88,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
         }
     }
 
+    // start of displayResults page
     public DisplayResults(ArrayList<CodeSection> codeSearchList)
     {
         theStage = new Stage();
@@ -96,11 +98,11 @@ public class DisplayResults implements EventHandler<ActionEvent>
         pane.add(topPane, 0, 0);
         pane.add(bottomPane, 0, 1);
         ScrollPane scrollPane = new ScrollPane();
-        HBox Hbox1 = new HBox();
         GridPane insetPane = new GridPane();
         GridPane insetInnerPane =  new GridPane();
         GridPane outsetPane = new GridPane();
-        Hbox1.getChildren().add(0, insetPane);
+        GridPane buttonPane = new GridPane();
+        buttonPane.setPadding(new Insets(10,10,10,10));
         Scene scene = new Scene(pane);
         theStage.setScene(scene);
         theStage.setTitle("Search Results");
@@ -109,12 +111,55 @@ public class DisplayResults implements EventHandler<ActionEvent>
         pane.setPadding(new Insets(10,10,10,10));
         bottomPane.setHgap(5);
         bottomPane.setVgap(5);
+        viewBtnList = new ArrayList<>();
+        updateBtnList = new ArrayList<>();
+        deleteBtnList = new ArrayList<>();
 
         olCodeSearchList = FXCollections.observableArrayList(codeSearchList);
-        ArrayList<Node> scrollListNodes = new ArrayList<>();
         int i = 0;
+
         for(CodeSection c: olCodeSearchList)
         {
+            //create buttonPane
+            buttonPane = new GridPane();
+            buttonPane.setPadding(new Insets (10,10,10,10));
+            buttonPane.setHgap(5);
+            buttonPane.setVgap(5);
+
+            //create view button
+            Tooltip vtip = new Tooltip("View");
+            char eye = Character.highSurrogate(128065);
+            Button viewBtn = new Button(eye +"");
+            viewBtn.setId("" + c.getId());
+            viewBtn.setTooltip(vtip);
+            viewBtn.setMinWidth(40);
+            viewBtn.setMaxWidth(40);
+
+            //create update button
+            Tooltip utip = new Tooltip("Update");
+            Button updateBtn = new Button("✎");
+            updateBtn.setId("" + c.getId());
+            updateBtn.setTooltip(utip);
+            updateBtn.setMinWidth(40);
+            updateBtn.setMaxWidth(40);
+
+            //create delete button
+            Tooltip dtip = new Tooltip("Delete");
+            Button deleteBtn = new Button("✗");
+            deleteBtn.setId("" + c.getId());
+            deleteBtn.setTooltip(dtip);
+            deleteBtn.setMinWidth(40);
+            deleteBtn.setMaxWidth(40);
+
+            //add buttons to list
+            viewBtnList.add(viewBtn);
+            updateBtnList.add(updateBtn);
+            deleteBtnList.add(deleteBtn);
+            buttonPane.add(viewBtnList.get(i), 0, 0);
+            buttonPane.add(updateBtnList.get(i), 0, 1);
+            buttonPane.add(deleteBtnList.get(i), 0, 2);
+
+            //create insetInnerPane
             Text id = new Text();
             id.setText("ID: " + c.getId());
             Text language = new Text();
@@ -129,23 +174,32 @@ public class DisplayResults implements EventHandler<ActionEvent>
             insetInnerPane.add(language, 0, 1);
             insetInnerPane.add(tags, 0, 2);
             insetInnerPane.add(writer, 0, 3);
+
+            //format inset pane
             ColumnConstraints column1 = new ColumnConstraints();
-            column1.setPercentWidth(30);
+            column1.setPercentWidth(7);
             ColumnConstraints column2 = new ColumnConstraints();
-            column2.setPercentWidth(70);
-            insetPane.getColumnConstraints().addAll(column1, column2);
-            insetPane.add(insetInnerPane, 0, 0);
-            insetPane.add(code, 1, 0);
+            column2.setPercentWidth(20);
+            ColumnConstraints column3 = new ColumnConstraints();
+            column3.setPercentWidth(73);
+            insetPane.getColumnConstraints().addAll(column1, column2, column3);
+
+            //make inset pane
+            insetPane.setMaxHeight(5);
+            insetPane.add(buttonPane, 0, 0);
+            insetPane.add(insetInnerPane, 1, 0);
+            insetPane.add(code, 2, 0);
             insetPane.setGridLinesVisible(true);
             outsetPane.setPrefSize(800, 400);
             outsetPane.add(insetPane, 0,i);
 
+            //alternate colors
             i++;
             int j = i%2;
             insetPane.setStyle("-fx-background-color: white;");
             if(j == 1)
             {
-                insetPane.setStyle("-fx-background-color: lightgrey;");
+                insetPane.setStyle("-fx-background-color: lavender;");
             }
             insetPane = new GridPane();
             insetInnerPane = new GridPane();
@@ -155,18 +209,10 @@ public class DisplayResults implements EventHandler<ActionEvent>
         scrollPane.setContent(outsetPane);
         topPane.add(scrollPane, 0 ,0);
 
-        viewBtn = new Button("View");
-        updateBtn = new Button("Edit");
-        deleteBtn = new Button("Delete");
-        cancelBtn = new Button("Go Back");
-        bottomPane.add(viewBtn, 0, 0);
-        bottomPane.add(updateBtn, 1, 0);
-        bottomPane.add(deleteBtn, 2, 0);
-        bottomPane.add(cancelBtn, 3, 0);
 
-        viewBtn.setOnAction(new viewButtonHandler());
-        updateBtn.setOnAction(new updateButtonHandler());
-        deleteBtn.setOnAction(new deleteButtonHandler());
+        Button cancelBtn = new Button("Go Back");
+
+        bottomPane.add(cancelBtn, 3, 0);
         cancelBtn.setOnAction(this);
     }
 
