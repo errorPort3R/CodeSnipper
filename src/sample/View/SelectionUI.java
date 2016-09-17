@@ -1,5 +1,7 @@
 package sample.View;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import sample.Controller.Controller;
 import sample.Model.CodeSection;
@@ -32,7 +35,7 @@ public class SelectionUI implements EventHandler<ActionEvent>
     private TextField keywords;
     private TextArea code;
     private TextArea comments;
-    private CheckBox inclusive;
+    private ToggleGroup searchGroup;
     ObservableList<String> oListLanguages = FXCollections.observableArrayList(Controller.getAllLanguages());
 
     public class searchBtnHandler implements EventHandler<ActionEvent>
@@ -51,9 +54,9 @@ public class SelectionUI implements EventHandler<ActionEvent>
             {
                 lang = newLanguage.getText();
             }
-            if (inclusive.isSelected())
+            if (searchGroup.getSelectedToggle() != null)
             {
-                selectedInclusive = true;
+                selectedInclusive =  (Boolean) searchGroup.getSelectedToggle().getUserData();
             }
 
             ArrayList<CodeSection> searchedCode = Controller.searchSnippets(author.getText(), tags.getText(), keywords.getText(), lang, selectedInclusive);
@@ -115,6 +118,7 @@ public class SelectionUI implements EventHandler<ActionEvent>
         GridPane pane = new GridPane();
         GridPane topInsertPane = new GridPane();
         GridPane bottomInsertPane = new GridPane();
+        VBox radioBox = new VBox();
         Scene scene = new Scene(pane);
         stage.setScene(scene);
         selectionStage.setTitle("Code Snippets");
@@ -131,8 +135,19 @@ public class SelectionUI implements EventHandler<ActionEvent>
         //TOP INSERT PANE START
         Button searchBtn = new Button("Search");
         Button addBtn = new Button("Add Snippet");
-        ToggleGroup searchGroup = new ToggleGroup();
-        inclusive = new CheckBox("Inclusive Search");
+        searchGroup = new ToggleGroup();
+        RadioButton exclusiveBtn = new RadioButton("Exclusive");
+        exclusiveBtn.setToggleGroup(searchGroup);
+        exclusiveBtn.setSelected(true);
+        exclusiveBtn.setUserData(false);
+        exclusiveBtn.setStyle("-fx-font-size: 9;");
+        RadioButton inclusiveBtn = new RadioButton("Inclusive");
+        inclusiveBtn.setToggleGroup(searchGroup);
+        inclusiveBtn.setUserData(true);
+        inclusiveBtn.setStyle("-fx-font-size: 9;");
+
+        radioBox.getChildren().add(exclusiveBtn);
+        radioBox.getChildren().add(inclusiveBtn);
 
         Collections.sort(oListLanguages);
         language = new ComboBox(oListLanguages);
@@ -141,7 +156,7 @@ public class SelectionUI implements EventHandler<ActionEvent>
         newLanguage = new TextField();
         newLanguage.setPromptText("New Language");
         topInsertPane.add(searchBtn, 0, 0);
-        topInsertPane.add(inclusive, 1, 0);
+        topInsertPane.add(radioBox, 1, 0);
         topInsertPane.add(addBtn, 4, 0);
 
         keywords = new TextField();
