@@ -190,11 +190,11 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
             //format inset pane
             ColumnConstraints column1 = new ColumnConstraints();
-            column1.setPercentWidth(7);
+            column1.setPercentWidth(6);
             ColumnConstraints column2 = new ColumnConstraints();
             column2.setPercentWidth(20);
             ColumnConstraints column3 = new ColumnConstraints();
-            column3.setPercentWidth(73);
+            column3.setPercentWidth(74);
             insetPane.getColumnConstraints().addAll(column1, column2, column3);
 
             //make inset pane
@@ -214,6 +214,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
             if(j == 1)
             {
                 insetPane.setStyle("-fx-background-color: lavender;");
+                code.setStyle("-fx-background-color: lavender;");
             }
             insetPane = new GridPane();
             insetInnerPane = new GridPane();

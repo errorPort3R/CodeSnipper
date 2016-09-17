@@ -1,5 +1,6 @@
 package sample.Controller;
 
+import com.sun.org.apache.bcel.internal.classfile.Code;
 import jodd.json.JsonParser;
 import sample.Model.CodeSection;
 
@@ -103,6 +104,8 @@ public class Controller
     {
         ArrayList<CodeSection> codeSearch = new ArrayList<>();
         ArrayList<String> tagsList = new ArrayList<>();
+        ArrayList<String> keywordsList = new ArrayList<>();
+        ArrayList<CodeSection> removalList = new ArrayList<>();
         //check for null values
         if (author == null){author = "";}
         if (tags == null){tags = "";}
@@ -119,37 +122,34 @@ public class Controller
         }
 
         //inclusive Search
-        if (isInclusive)
+        for (CodeSection code : theSnippetLibrary.getSnippets())
         {
-            for (CodeSection code : theSnippetLibrary.getSnippets())
+
+            if (tags.length() > 0)
             {
-
-                if (tags.length() > 0)
+                for (String t : tagsList)
                 {
-                    for (String t : tagsList)
-                    {
-                        if(code.getTags().contains(t))
-                        {
-                            codeSearch.add(code);
-                        }
-                    }
-                }
-
-                if (code.getWriter().equalsIgnoreCase(author) ||
-                    code.getLanguage().equalsIgnoreCase(lang) ||
-                    code.getSnippet().contains(keywords) ||
-                    code.getComments().contains(keywords))
-                {
-                    if (!codeSearch.contains(code))
+                    if(code.getTags().contains(t))
                     {
                         codeSearch.add(code);
                     }
                 }
             }
+
+            if (code.getWriter().equalsIgnoreCase(author) ||
+                code.getLanguage().equalsIgnoreCase(lang) ||
+                code.getSnippet().contains(keywords) ||
+                code.getComments().contains(keywords))
+            {
+                if (!codeSearch.contains(code))
+                {
+                    codeSearch.add(code);
+                }
+            }
         }
 
         //exclusive search
-        else
+        if (!isInclusive)
         {
             for(CodeSection code : theSnippetLibrary.getSnippets())
             {
@@ -159,44 +159,88 @@ public class Controller
                     {
                         if (code.getTags().contains(t.toLowerCase()))
                         {
-                            codeSearch.add(code);
+                            if (!codeSearch.contains(code))
+                            {
+                                codeSearch.add(code);
+                            }
+                        }
+                        else
+                        {
+                            if (!removalList.contains(code) && codeSearch.contains(code))
+                            {
+                                removalList.add(code);
+                            }
                         }
                     }
                 }
+
                 if(author.length() > 0)
                 {
                     if(code.getWriter().equalsIgnoreCase(author))
                     {
-                        codeSearch.add(code);
+                        if (!codeSearch.contains(code))
+                        {
+                            codeSearch.add(code);
+                        }
                     }
                     else
                     {
-                        codeSearch.remove(code);
+                        if (!removalList.contains(code) && codeSearch.contains(code))
+                        {
+                            removalList.add(code);
+                        }
                     }
                 }
+
                 if(lang.length() > 0)
                 {
                     if(code.getLanguage().equalsIgnoreCase(lang))
                     {
-                        codeSearch.add(code);
+                        if (!codeSearch.contains(code))
+                        {
+                            codeSearch.add(code);
+                        }
                     }
                     else
                     {
-                        codeSearch.remove(code);
+                        if (!removalList.contains(code) && codeSearch.contains(code))
+                        {
+                            removalList.add(code);
+                        }
                     }
                 }
+
                 if(keywords.length() > 0)
                 {
-                    if(code.getSnippet().equalsIgnoreCase(keywords) || code.getComments().equalsIgnoreCase(keywords))
+                    String fields[] = tags.split(" ");
+                    for(String f:fields)
                     {
-                        codeSearch.add(code);
+                        keywordsList.add(f);
                     }
-                    else
+                    for (String k : keywordsList)
                     {
-                        codeSearch.remove(code);
+
+                        if (code.getSnippet().contains(k) || code.getComments().contains(k))
+                        {
+                            if (!codeSearch.contains(code))
+                            {
+                                codeSearch.add(code);
+                            }
+                        }
+                        else
+                        {
+                            if (!removalList.contains(code) && codeSearch.contains(code))
+                            {
+                                removalList.add(code);
+                            }
+                        }
                     }
                 }
             }
+        }
+        for (CodeSection r : removalList)
+        {
+            codeSearch.remove(r);
         }
         return codeSearch;
     }
