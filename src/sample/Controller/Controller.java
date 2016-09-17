@@ -11,6 +11,7 @@ import java.io.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 
 /**
@@ -117,25 +118,37 @@ public class Controller
             }
         }
 
+        //inclusive Search
         if (isInclusive)
         {
             for (CodeSection code : theSnippetLibrary.getSnippets())
             {
+
                 if (tags.length() > 0)
                 {
                     for (String t : tagsList)
-                    if (code.getWriter().equalsIgnoreCase(author) ||
-                            code.getTags().contains(t.toLowerCase()) ||
-                            code.getLanguage().equalsIgnoreCase(lang) ||
-                            code.getSnippet().contains(keywords) ||
-                            code.getComments().contains(keywords))
+                    {
+                        if(code.getTags().contains(t))
+                        {
+                            codeSearch.add(code);
+                        }
+                    }
+                }
+
+                if (code.getWriter().equalsIgnoreCase(author) ||
+                    code.getLanguage().equalsIgnoreCase(lang) ||
+                    code.getSnippet().contains(keywords) ||
+                    code.getComments().contains(keywords))
+                {
+                    if (!codeSearch.contains(code))
                     {
                         codeSearch.add(code);
                     }
                 }
             }
-
         }
+
+        //exclusive search
         else
         {
             for(CodeSection code : theSnippetLibrary.getSnippets())

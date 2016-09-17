@@ -221,10 +221,8 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
         //scrollPane.setContent(outsetPane);
         topPane.add(outsetPane, 0 ,0);
-
-
         Button cancelBtn = new Button("Go Back");
-        bottomPane.add(cancelBtn, 3, 0);
+        bottomPane.add(cancelBtn, 0, 0);
         cancelBtn.setOnAction(this);
     }
 
