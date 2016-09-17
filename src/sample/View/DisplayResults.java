@@ -5,10 +5,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
@@ -20,7 +20,7 @@ import java.lang.Character.UnicodeBlock;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static javafx.scene.input.KeyCode.U;
+
 
 /**
  * Created by jeffryporter on 8/30/16.
@@ -28,14 +28,20 @@ import static javafx.scene.input.KeyCode.U;
 
 public class DisplayResults implements EventHandler<ActionEvent>
 {
-    public static UnicodeBlock MISCELLANEOUS_SYMBOLS_AND_PICTOGRAPHS;
     private Stage theStage;
+    protected Stage selectionStage =null;
     private TableView<CodeSection> snippetList = new TableView<>();
     ObservableList<CodeSection> olCodeSearchList;
     private CodeSection snippet;
     private ArrayList<Button> viewBtnList;
     private ArrayList<Button> updateBtnList;
     private ArrayList<Button> deleteBtnList;
+    private int currentId = 0;
+
+    public void setID(String id)
+    {
+        currentId = Integer.valueOf(id);
+    }
 
     public class updateButtonHandler implements EventHandler<ActionEvent>
     {
@@ -60,7 +66,6 @@ public class DisplayResults implements EventHandler<ActionEvent>
     {
         public void handle(ActionEvent event)
         {
-
             theStage.hide();
             ViewSnippet viewpage = new ViewSnippet();
             viewpage.show();
@@ -89,8 +94,9 @@ public class DisplayResults implements EventHandler<ActionEvent>
     }
 
     // start of displayResults page
-    public DisplayResults(ArrayList<CodeSection> codeSearchList)
+    public DisplayResults(ArrayList<CodeSection> codeSearchList, Stage stage)
     {
+        selectionStage = stage;
         theStage = new Stage();
         GridPane pane = new GridPane();
         GridPane topPane = new GridPane();
@@ -114,7 +120,6 @@ public class DisplayResults implements EventHandler<ActionEvent>
         viewBtnList = new ArrayList<>();
         updateBtnList = new ArrayList<>();
         deleteBtnList = new ArrayList<>();
-
         olCodeSearchList = FXCollections.observableArrayList(codeSearchList);
         int i = 0;
 
@@ -128,8 +133,12 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
             //create view button
             Tooltip vtip = new Tooltip("View");
-            char eye = Character.highSurrogate(128065);
-            Button viewBtn = new Button(eye +"");
+            Button viewBtn = new Button();
+            Image eye = new Image(getClass().getResourceAsStream("/sample/Resources/eye.png"));
+            ImageView eyeView = new ImageView(eye);
+            eyeView.setFitHeight(15);
+            eyeView.setFitWidth(15);
+            viewBtn.setGraphic(eyeView);
             viewBtn.setId("" + c.getId());
             viewBtn.setTooltip(vtip);
             viewBtn.setMinWidth(40);
@@ -158,6 +167,9 @@ public class DisplayResults implements EventHandler<ActionEvent>
             buttonPane.add(viewBtnList.get(i), 0, 0);
             buttonPane.add(updateBtnList.get(i), 0, 1);
             buttonPane.add(deleteBtnList.get(i), 0, 2);
+            viewBtn.setOnAction(new viewButtonHandler());
+            updateBtn.setOnAction(new updateButtonHandler());
+            deleteBtn.setOnAction(new deleteButtonHandler());
 
             //create insetInnerPane
             Text id = new Text();
@@ -168,8 +180,9 @@ public class DisplayResults implements EventHandler<ActionEvent>
             tags.setText("Tags: " + c.getTags());
             Text writer = new Text();
             writer.setText("Writer: " + c.getWriter());
-            Text code = new Text();
+            TextArea code = new TextArea();
             code.setText(c.getSnippet());
+            insetInnerPane.setPadding(new Insets (0,0,0,10));
             insetInnerPane.add(id, 0, 0);
             insetInnerPane.add(language, 0, 1);
             insetInnerPane.add(tags, 0, 2);
@@ -186,6 +199,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
             //make inset pane
             insetPane.setMaxHeight(5);
+            insetPane.setPadding(new Insets (0,0,0,10));
             insetPane.add(buttonPane, 0, 0);
             insetPane.add(insetInnerPane, 1, 0);
             insetPane.add(code, 2, 0);
@@ -203,15 +217,13 @@ public class DisplayResults implements EventHandler<ActionEvent>
             }
             insetPane = new GridPane();
             insetInnerPane = new GridPane();
-
         }
 
-        scrollPane.setContent(outsetPane);
-        topPane.add(scrollPane, 0 ,0);
+        //scrollPane.setContent(outsetPane);
+        topPane.add(outsetPane, 0 ,0);
 
 
         Button cancelBtn = new Button("Go Back");
-
         bottomPane.add(cancelBtn, 3, 0);
         cancelBtn.setOnAction(this);
     }
@@ -223,6 +235,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
     public void handle(ActionEvent event)
     {
+        selectionStage.show();
         theStage.hide();
     }
 }

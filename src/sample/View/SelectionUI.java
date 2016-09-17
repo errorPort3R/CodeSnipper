@@ -40,6 +40,7 @@ public class SelectionUI implements EventHandler<ActionEvent>
         public void handle(ActionEvent event)
         {
             //get variables for search
+            selectionStage.hide();
             boolean selectedInclusive = false;
             String lang = null;
             if(!language.getValue().toString().isEmpty())
@@ -56,7 +57,7 @@ public class SelectionUI implements EventHandler<ActionEvent>
             }
 
             ArrayList<CodeSection> searchedCode = Controller.searchSnippets(author.getText(), tags.getText(), keywords.getText(), lang, selectedInclusive);
-            DisplayResults ds = new DisplayResults(searchedCode);
+            DisplayResults ds = new DisplayResults(searchedCode, selectionStage);
             ds.show();
         }
     }
