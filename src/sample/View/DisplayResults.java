@@ -28,6 +28,8 @@ import java.util.Optional;
 
 public class DisplayResults implements EventHandler<ActionEvent>
 {
+    private int STD_WIDTH = 800;
+    private int STD_HEIGHT = 400;
     private Stage theStage;
     protected Stage selectionStage =null;
     private TableView<CodeSection> snippetList = new TableView<>();
@@ -36,22 +38,26 @@ public class DisplayResults implements EventHandler<ActionEvent>
     private ArrayList<Button> viewBtnList;
     private ArrayList<Button> updateBtnList;
     private ArrayList<Button> deleteBtnList;
-    private int currentId = 0;
-
-    public void setID(String id)
-    {
-        currentId = Integer.valueOf(id);
-    }
 
     public class updateButtonHandler implements EventHandler<ActionEvent>
     {
+
+        updateButtonHandler(CodeSection code)
+        {
+            snippet = code;
+        }
         public void handle(ActionEvent event)
         {
             snippet= new CodeSection();
             snippet = snippetList.selectionModelProperty().getValue().getSelectedItem();
             if(snippet == null)
             {
-                //TODO alertbox
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("DANGER WILL ROBINSON!");
+                alert.setHeaderText("Something went terribly wrong.");
+                alert.setContentText("We're not sure what went wrong.  Honestly, you should never have seen this warning, but here we are.  Click okay to try again.");
+
+                alert.showAndWait();
             }
             else
             {
@@ -64,17 +70,24 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
     public class viewButtonHandler implements EventHandler<ActionEvent>
     {
+        viewButtonHandler(CodeSection code)
+        {
+            snippet = code;
+        }
         public void handle(ActionEvent event)
         {
             theStage.hide();
             ViewSnippet viewpage = new ViewSnippet();
             viewpage.show();
         }
-
     }
 
     public class deleteButtonHandler implements EventHandler<ActionEvent>
     {
+        deleteButtonHandler(CodeSection code)
+        {
+            snippet = code;
+        }
         public void handle(ActionEvent event)
         {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -85,6 +98,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
             if (result.get() == ButtonType.OK)
             {
                 Controller.deleteSnippet(snippet);
+                olCodeSearchList.remove(snippet);
             }
             else
             {
@@ -167,9 +181,9 @@ public class DisplayResults implements EventHandler<ActionEvent>
             buttonPane.add(viewBtnList.get(i), 0, 0);
             buttonPane.add(updateBtnList.get(i), 0, 1);
             buttonPane.add(deleteBtnList.get(i), 0, 2);
-            viewBtn.setOnAction(new viewButtonHandler());
-            updateBtn.setOnAction(new updateButtonHandler());
-            deleteBtn.setOnAction(new deleteButtonHandler());
+            viewBtnList.get(i).setOnAction(new viewButtonHandler((CodeSection)viewBtnList.get(i).getUserData()));
+            updateBtnList.get(i).setOnAction(new updateButtonHandler((CodeSection)viewBtnList.get(i).getUserData()));
+            deleteBtnList.get(i).setOnAction(new deleteButtonHandler((CodeSection)viewBtnList.get(i).getUserData()));
 
             //create insetInnerPane
             Text id = new Text();
@@ -199,29 +213,33 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
             //make inset pane
             insetPane.setMaxHeight(5);
-            insetPane.setPadding(new Insets (0,0,0,10));
+            insetPane.setPadding(new Insets (0,0,0,0));
             insetPane.add(buttonPane, 0, 0);
             insetPane.add(insetInnerPane, 1, 0);
             insetPane.add(code, 2, 0);
             insetPane.setGridLinesVisible(true);
-            outsetPane.setPrefSize(800, 400);
+            outsetPane.setPrefSize(STD_WIDTH+40.0, STD_HEIGHT+40.0);
             outsetPane.add(insetPane, 0,i);
+            viewBtnList.get(i).setUserData(c);
 
             //alternate colors
             i++;
             int j = i%2;
             insetPane.setStyle("-fx-background-color: white;");
+            code.setStyle("-fx-background-color: white;");
             if(j == 1)
             {
                 insetPane.setStyle("-fx-background-color: lavender;");
                 code.setStyle("-fx-background-color: lavender;");
             }
+
             insetPane = new GridPane();
             insetInnerPane = new GridPane();
         }
 
-        //scrollPane.setContent(outsetPane);
-        topPane.add(outsetPane, 0 ,0);
+        scrollPane.setMinSize(STD_WIDTH, STD_HEIGHT);
+        scrollPane.setContent(outsetPane);
+        topPane.add(scrollPane, 0 ,0);
         Button cancelBtn = new Button("Go Back");
         bottomPane.add(cancelBtn, 0, 0);
         cancelBtn.setOnAction(this);

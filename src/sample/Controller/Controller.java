@@ -269,7 +269,7 @@ public class Controller
     //delete snippet
     public static boolean deleteSnippet(CodeSection snippet)
     {
-        CodeSection codeRemoved = theSnippetLibrary.removeSnippet(snippet.getId());
+        CodeSection codeRemoved = theSnippetLibrary.removeSnippet(snippet);
         if (codeRemoved.getId() == snippet.getId())
         {
             return true;

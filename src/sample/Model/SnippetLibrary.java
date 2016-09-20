@@ -23,21 +23,21 @@ public class SnippetLibrary
         return theSnippetLibrary;
     }
 
-    public void addSnippet(CodeSection snip)
+    public void addSnippet(CodeSection snippet)
     {
-        snippets.add(snip);
+        snippets.add(snippet);
     }
 
-    public CodeSection removeSnippet(int id)
+    public CodeSection removeSnippet(CodeSection snippet)
     {
-        CodeSection code = snippets.get(id);
-        snippets.remove(id);
+        CodeSection code = snippets.get(snippets.indexOf(snippet));
+        snippets.remove(snippet);
         return code;
     }
 
-    public void updateSnippet(CodeSection snip)
+    public void updateSnippet(CodeSection snippet)
     {
-        snippets.set(snip.getId(), snip);
+        snippets.set(snippets.indexOf(snippet), snippet);
     }
 
     public boolean hasData()
