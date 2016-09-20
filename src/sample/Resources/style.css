@@ -1,0 +1,9 @@
+.text-area
+{
+    text-area-background: lavender ;
+}
+
+.text-area .content
+{
+    -fx-background-color: text-area-background ;
+}

@@ -56,7 +56,6 @@ public class DisplayResults implements EventHandler<ActionEvent>
                 alert.setTitle("DANGER WILL ROBINSON!");
                 alert.setHeaderText("Something went terribly wrong.");
                 alert.setContentText("We're not sure what went wrong.  Honestly, you should never have seen this warning, but here we are.  Click okay to try again.");
-
                 alert.showAndWait();
             }
             else
@@ -124,6 +123,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
         GridPane buttonPane = new GridPane();
         buttonPane.setPadding(new Insets(10,10,10,10));
         Scene scene = new Scene(pane);
+        scene.getStylesheets().add("/sample/Resources/style.css");
         theStage.setScene(scene);
         theStage.setTitle("Search Results");
         pane.setHgap(5);
@@ -195,6 +195,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
             Text writer = new Text();
             writer.setText("Writer: " + c.getWriter());
             TextArea code = new TextArea();
+            //code.setStyle("style: lavender;");
             code.setText(c.getSnippet());
             insetInnerPane.setPadding(new Insets (0,0,0,10));
             insetInnerPane.add(id, 0, 0);
@@ -226,11 +227,11 @@ public class DisplayResults implements EventHandler<ActionEvent>
             i++;
             int j = i%2;
             insetPane.setStyle("-fx-background-color: white;");
-            code.setStyle("-fx-background-color: white;");
+            code.setStyle("text-area-background: white;");
             if(j == 1)
             {
                 insetPane.setStyle("-fx-background-color: lavender;");
-                code.setStyle("-fx-background-color: lavender;");
+                code.setStyle("text-area-background: lavender;");
             }
 
             insetPane = new GridPane();

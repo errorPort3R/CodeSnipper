@@ -26,7 +26,6 @@ import java.util.Collections;
  */
 public class SelectionUI implements EventHandler<ActionEvent>
 {
-    SnippetLibrary theSnippetLibrary = SnippetLibrary.getTheSnippetLibrary();
     private Stage selectionStage;
     private ComboBox language;
     private TextField newLanguage;
