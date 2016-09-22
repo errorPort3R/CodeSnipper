@@ -10,12 +10,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import sample.Controller.Controller;
 import sample.Model.CodeSection;
 
 import java.io.FileNotFoundException;
 
-import static javafx.geometry.Pos.CENTER;
 
 /**
  * Created by jeffryporter on 9/2/16.
@@ -23,11 +21,10 @@ import static javafx.geometry.Pos.CENTER;
 public class ViewSnippet
 {
     private Stage viewStage;
-    private CodeSection snippet = new CodeSection();
+    private CodeSection snippet = DisplayResults.getSnippet();
 
     public ViewSnippet(Stage stage) throws FileNotFoundException
     {
-        Controller.initialLoad();
         viewStage = stage;
         GridPane pane = new GridPane();
         GridPane topPane = new GridPane();
@@ -50,22 +47,22 @@ public class ViewSnippet
         Label tagsLabel = new Label();
         Label commentLabel = new Label();
         langLabel.setText("Language:");
-        langLabel.setAlignment(Pos.CENTER_RIGHT);
+        langLabel.setAlignment(Pos.BASELINE_RIGHT);
         topPane.add(langLabel,0 ,0);
         authLabel.setText("Author:");
-        authLabel.setAlignment(Pos.CENTER_RIGHT);
+        authLabel.setAlignment(Pos.BASELINE_RIGHT);
         topPane.add(authLabel,0 ,1);
         tagsLabel.setText("Tags:");
-        tagsLabel.setAlignment(Pos.CENTER_RIGHT);
+        tagsLabel.setAlignment(Pos.BASELINE_RIGHT);
         topPane.add(tagsLabel,0 ,2);
         commentLabel.setText("Comments:");
         commentLabel.setAlignment(Pos.TOP_RIGHT);
         topPane.add(commentLabel,0 ,3);
 
         TextField lang = new TextField();
-        lang.setText(snippet.getLanguage());
+        if(snippet.getLanguage() != null){lang.setText(snippet.getLanguage());}
         TextField author = new TextField();
-        author.setText(snippet.getWriter());
+        if(snippet.getWriter() != null){author.setText(snippet.getWriter());}
         TextField tags = new TextField();
         String tag =  "";
         if(snippet.getTags() != null)
@@ -77,6 +74,8 @@ public class ViewSnippet
         }
         tags.setText(tag);
         TextArea comments = new TextArea();
+        if(snippet.getComments() != null){comments.setText(snippet.getComments());}
+        comments.setMaxHeight(50);
         topPane.add(lang,1 ,0);
         topPane.add(author, 1, 1);
         topPane.add(tags, 1, 2);

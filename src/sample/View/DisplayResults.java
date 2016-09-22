@@ -15,6 +15,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import sample.Controller.Controller;
 import sample.Model.CodeSection;
+import sample.Model.SnippetLibrary;
 
 import java.io.FileNotFoundException;
 import java.lang.Character.UnicodeBlock;
@@ -32,22 +33,24 @@ public class DisplayResults implements EventHandler<ActionEvent>
     private int STD_WIDTH = 800;
     private int STD_HEIGHT = 400;
     private Stage theStage;
+    private ListView topPane;
     protected Stage selectionStage =null;
     private TableView<CodeSection> snippetList = new TableView<>();
-    ObservableList<CodeSection> olCodeSearchList;
-    private CodeSection snippet;
+    ObservableList<GridPane> olCodeSearchList;
     private ArrayList<Button> viewBtnList;
     private ArrayList<Button> updateBtnList;
     private ArrayList<Button> deleteBtnList;
-    protected CodeSection currentSnippet;
+    private ArrayList<GridPane> snippetPaneList;
+    private static CodeSection snippet = new CodeSection();
+    static SnippetLibrary theSnippetLibrary = SnippetLibrary.getTheSnippetLibrary();
 
     public class updateButtonHandler implements EventHandler<ActionEvent>
     {
 
-        updateButtonHandler(CodeSection code)
-        {
-            snippet = code;
-        }
+//        updateButtonHandler(CodeSection code)
+//        {
+//            snippet = code;
+//        }
         public void handle(ActionEvent event)
         {
             snippet= new CodeSection();
@@ -71,12 +74,9 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
     public class viewButtonHandler implements EventHandler<ActionEvent>
     {
-        viewButtonHandler(CodeSection code)
-        {
-            snippet = code;
-        }
         public void handle(ActionEvent event)
         {
+            snippet = theSnippetLibrary.getSnippetById((Integer)topPane.getSelectionModel().getSelectedItem());
             theStage.hide();
             ViewSnippet viewpage = null;
             try
@@ -92,10 +92,10 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
     public class deleteButtonHandler implements EventHandler<ActionEvent>
     {
-        deleteButtonHandler(CodeSection code)
-        {
-            snippet = code;
-        }
+//        deleteButtonHandler(CodeSection code)
+//        {
+//            snippet = code;
+//        }
         public void handle(ActionEvent event)
         {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -121,7 +121,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
         selectionStage = stage;
         theStage = new Stage();
         GridPane pane = new GridPane();
-        GridPane topPane = new GridPane();
+        topPane = new ListView();
         GridPane bottomPane = new GridPane();
         pane.add(topPane, 0, 0);
         pane.add(bottomPane, 0, 1);
@@ -143,10 +143,10 @@ public class DisplayResults implements EventHandler<ActionEvent>
         viewBtnList = new ArrayList<>();
         updateBtnList = new ArrayList<>();
         deleteBtnList = new ArrayList<>();
-        olCodeSearchList = FXCollections.observableArrayList(codeSearchList);
+        snippetPaneList = new ArrayList();
         int i = 0;
 
-        for(CodeSection c: olCodeSearchList)
+        for(CodeSection c: codeSearchList)
         {
             //create buttonPane
             buttonPane = new GridPane();
@@ -190,9 +190,6 @@ public class DisplayResults implements EventHandler<ActionEvent>
             buttonPane.add(viewBtnList.get(i), 0, 0);
             buttonPane.add(updateBtnList.get(i), 0, 1);
             buttonPane.add(deleteBtnList.get(i), 0, 2);
-            viewBtnList.get(i).setOnAction(new viewButtonHandler((CodeSection)viewBtnList.get(i).getUserData()));
-            updateBtnList.get(i).setOnAction(new updateButtonHandler((CodeSection)viewBtnList.get(i).getUserData()));
-            deleteBtnList.get(i).setOnAction(new deleteButtonHandler((CodeSection)viewBtnList.get(i).getUserData()));
 
             //create insetInnerPane
             Text id = new Text();
@@ -204,7 +201,6 @@ public class DisplayResults implements EventHandler<ActionEvent>
             Text writer = new Text();
             writer.setText("Writer: " + c.getWriter());
             TextArea code = new TextArea();
-            //code.setStyle("style: lavender;");
             code.setText(c.getSnippet());
             insetInnerPane.setPadding(new Insets (0,0,0,10));
             insetInnerPane.add(id, 0, 0);
@@ -228,9 +224,19 @@ public class DisplayResults implements EventHandler<ActionEvent>
             insetPane.add(insetInnerPane, 1, 0);
             insetPane.add(code, 2, 0);
             insetPane.setGridLinesVisible(true);
+
+            //build outset Pane
             outsetPane.setPrefSize(STD_WIDTH+40.0, STD_HEIGHT+40.0);
-            outsetPane.add(insetPane, 0,i);
-            viewBtnList.get(i).setUserData(c);
+            outsetPane.add(insetPane, 0, i);
+            snippetPaneList.add(insetPane);
+
+            //add data to lists
+            viewBtnList.get(i).setUserData(c.getId());
+            viewBtnList.get(i).setOnAction(new viewButtonHandler());
+            updateBtnList.get(i).setOnAction(new updateButtonHandler());
+            deleteBtnList.get(i).setOnAction(new deleteButtonHandler());
+
+
 
             //alternate colors
             i++;
@@ -245,11 +251,15 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
             insetPane = new GridPane();
             insetInnerPane = new GridPane();
-        }
 
-        scrollPane.setMinSize(STD_WIDTH, STD_HEIGHT);
-        scrollPane.setContent(outsetPane);
-        topPane.add(scrollPane, 0 ,0);
+        }
+        olCodeSearchList = FXCollections.observableArrayList(snippetPaneList);
+
+        //add outsetPane to scrollPane
+        topPane.setMinSize(STD_WIDTH, STD_HEIGHT);
+//        scrollPane.setContent(outsetPane);
+        topPane.setItems(olCodeSearchList);
+
         Button cancelBtn = new Button("Go Back");
         bottomPane.add(cancelBtn, 0, 0);
         cancelBtn.setOnAction(this);
@@ -264,5 +274,10 @@ public class DisplayResults implements EventHandler<ActionEvent>
     {
         selectionStage.show();
         theStage.hide();
+    }
+
+    public static CodeSection getSnippet()
+    {
+        return snippet;
     }
 }
