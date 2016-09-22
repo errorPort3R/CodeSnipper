@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import sample.Controller.Controller;
 import sample.Model.CodeSection;
 
+import java.io.FileNotFoundException;
 import java.lang.Character.UnicodeBlock;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -38,6 +39,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
     private ArrayList<Button> viewBtnList;
     private ArrayList<Button> updateBtnList;
     private ArrayList<Button> deleteBtnList;
+    protected CodeSection currentSnippet;
 
     public class updateButtonHandler implements EventHandler<ActionEvent>
     {
@@ -76,7 +78,14 @@ public class DisplayResults implements EventHandler<ActionEvent>
         public void handle(ActionEvent event)
         {
             theStage.hide();
-            ViewSnippet viewpage = new ViewSnippet();
+            ViewSnippet viewpage = null;
+            try
+            {
+                viewpage = new ViewSnippet(theStage);
+            } catch (FileNotFoundException e)
+            {
+                e.printStackTrace();
+            }
             viewpage.show();
         }
     }

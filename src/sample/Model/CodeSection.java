@@ -91,6 +91,12 @@ public class CodeSection
         this.comments = comments;
     }
 
+    public static void setCounter(int lowestValue)
+    {
+
+        counter = lowestValue;
+    }
+
     @Override
     public String toString()
     {

@@ -1,6 +1,5 @@
 package sample.Controller;
 
-import com.sun.org.apache.bcel.internal.classfile.Code;
 import jodd.json.JsonParser;
 import sample.Model.CodeSection;
 
@@ -12,7 +11,6 @@ import java.io.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 
 /**
@@ -35,6 +33,19 @@ public class Controller
             String json = fileScanner.nextLine();
             JsonParser p = new JsonParser();
             theSnippetLibrary = p.parse(json, SnippetLibrary.class);
+        }
+        if(theSnippetLibrary.hasData())
+        {
+            int highest = 0;
+            for(CodeSection c : theSnippetLibrary.getSnippets())
+            {
+                if(c.getId()>highest)
+                {
+                    highest = c.getId();
+                }
+            }
+            highest++;
+            CodeSection.setCounter(highest);
         }
     }
 
@@ -270,6 +281,7 @@ public class Controller
     public static boolean deleteSnippet(CodeSection snippet)
     {
         CodeSection codeRemoved = theSnippetLibrary.removeSnippet(snippet);
+        saveFile();
         if (codeRemoved.getId() == snippet.getId())
         {
             return true;
