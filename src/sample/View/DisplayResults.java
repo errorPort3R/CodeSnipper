@@ -34,14 +34,14 @@ public class DisplayResults implements EventHandler<ActionEvent>
     private int STD_HEIGHT = 400;
     private Stage theStage;
     private ListView topPane;
-    protected Stage selectionStage =null;
+    protected Stage selectionStage = null;
     private TableView<CodeSection> snippetList = new TableView<>();
     ObservableList<GridPane> olCodeSearchList;
     private ArrayList<Button> viewBtnList;
     private ArrayList<Button> updateBtnList;
     private ArrayList<Button> deleteBtnList;
     private ArrayList<GridPane> snippetPaneList;
-    private static CodeSection snippet = new CodeSection();
+    private CodeSection snippet = new CodeSection();
     static SnippetLibrary theSnippetLibrary = SnippetLibrary.getTheSnippetLibrary();
 
     public class updateButtonHandler implements EventHandler<ActionEvent>
@@ -74,14 +74,20 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
     public class viewButtonHandler implements EventHandler<ActionEvent>
     {
+        private CodeSection mysnippet;
+        public viewButtonHandler(CodeSection snippet)
+        {
+            mysnippet = snippet;
+        }
+
         public void handle(ActionEvent event)
         {
-            snippet = theSnippetLibrary.getSnippetById((Integer)topPane.getSelectionModel().getSelectedItem());
+            snippet = mysnippet;
             theStage.hide();
             ViewSnippet viewpage = null;
             try
             {
-                viewpage = new ViewSnippet(theStage);
+                viewpage = new ViewSnippet(theStage, mysnippet);
             } catch (FileNotFoundException e)
             {
                 e.printStackTrace();
@@ -201,7 +207,8 @@ public class DisplayResults implements EventHandler<ActionEvent>
             Text writer = new Text();
             writer.setText("Writer: " + c.getWriter());
             TextArea code = new TextArea();
-            code.setText(c.getSnippet());
+            String snippet =c.getSnippet();
+            code.setText(snippet);
             insetInnerPane.setPadding(new Insets (0,0,0,10));
             insetInnerPane.add(id, 0, 0);
             insetInnerPane.add(language, 0, 1);
@@ -232,7 +239,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
             //add data to lists
             viewBtnList.get(i).setUserData(c.getId());
-            viewBtnList.get(i).setOnAction(new viewButtonHandler());
+            viewBtnList.get(i).setOnAction(new viewButtonHandler(c));
             updateBtnList.get(i).setOnAction(new updateButtonHandler());
             deleteBtnList.get(i).setOnAction(new deleteButtonHandler());
 
@@ -276,7 +283,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
         theStage.hide();
     }
 
-    public static CodeSection getSnippet()
+    public CodeSection getSnippet()
     {
         return snippet;
     }

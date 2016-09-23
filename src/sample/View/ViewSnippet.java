@@ -21,9 +21,10 @@ import java.io.FileNotFoundException;
 public class ViewSnippet
 {
     private Stage viewStage;
-    private CodeSection snippet = DisplayResults.getSnippet();
 
-    public ViewSnippet(Stage stage) throws FileNotFoundException
+    //private CodeSection snippet = DisplayResults.getSnippet();
+
+    public ViewSnippet(Stage stage, CodeSection snippet) throws FileNotFoundException
     {
         viewStage = stage;
         GridPane pane = new GridPane();
