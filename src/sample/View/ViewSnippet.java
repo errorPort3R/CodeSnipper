@@ -58,16 +58,12 @@ public class ViewSnippet implements EventHandler<ActionEvent>
         Label tagsLabel = new Label();
         Label commentLabel = new Label();
         langLabel.setText("Language:");
-        langLabel.setAlignment(Pos.BASELINE_RIGHT);
         topPane.add(langLabel,0 ,0);
         authLabel.setText("Author:");
-        authLabel.setAlignment(Pos.BASELINE_RIGHT);
         topPane.add(authLabel,0 ,1);
         tagsLabel.setText("Tags:");
-        tagsLabel.setAlignment(Pos.BASELINE_RIGHT);
         topPane.add(tagsLabel,0 ,2);
         commentLabel.setText("Comments:");
-        commentLabel.setAlignment(Pos.TOP_RIGHT);
         topPane.add(commentLabel,0 ,3);
 
         TextField lang = new TextField();

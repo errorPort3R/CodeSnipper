@@ -26,36 +26,46 @@ public class UpdateSnippet implements EventHandler<ActionEvent>
 {
     private Stage updateStage;
     private ArrayList<CodeSection> search;
-    private CodeSection snipOld;
+    TextField lang;
+    TextField author;
+    TextField tags;
+    TextArea comments;
+    TextArea code;
 
     public class updateButtonHandler implements EventHandler<ActionEvent>
     {
+        CodeSection snipOld = new CodeSection();
         CodeSection snip = new CodeSection();
+
         public updateButtonHandler(CodeSection snippet,String lang,String author,String tags,String comments,String code)
         {
-            snippet.setLanguage(lang);
-            snippet.setWriter(author);
-            if (tags.length() > 0)
+            snipOld = snippet;
+        }
+
+        public void handle(ActionEvent event)
+        {
+            //get variables for search
+            CodeSection snippet = snipOld;
+            snippet.setLanguage(lang.getText());
+            snippet.setWriter(author.getText());
+            if (tags.getText().length() > 0)
             {
                 ArrayList<String> tagsList = new ArrayList<>();
-                String fields[] = tags.split(" ");
+                String fields[] = tags.getText().split(" ");
                 for(String f:fields)
                 {
                     tagsList.add(f);
                 }
                 snippet.setTags(tagsList);
             }
-            snippet.setComments(comments);
+            snippet.setComments(comments.getText());
+            snippet.setSnippet(code.getText());
             snip = snippet;
-        }
-
-        public void handle(ActionEvent event)
-        {
-            //get variables for search
             Controller.editSnippets(snip);
             Controller.saveFile();
             search.set(search.indexOf(snipOld), snip);
             DisplayResults ds = new DisplayResults(search, updateStage);
+            updateStage.hide();
             ds.show();
         }
     }
@@ -63,8 +73,6 @@ public class UpdateSnippet implements EventHandler<ActionEvent>
 
     public UpdateSnippet(Stage stage, CodeSection snippet, ArrayList<CodeSection> searchResults) throws FileNotFoundException
     {
-        snipOld = new CodeSection();
-        snipOld = snippet;
         search = new ArrayList<CodeSection>();
         search = searchResults;
         updateStage = stage;
@@ -94,23 +102,19 @@ public class UpdateSnippet implements EventHandler<ActionEvent>
         Label tagsLabel = new Label();
         Label commentLabel = new Label();
         langLabel.setText("Language:");
-        langLabel.setAlignment(Pos.BASELINE_RIGHT);
         topPane.add(langLabel,0 ,0);
         authLabel.setText("Author:");
-        authLabel.setAlignment(Pos.BASELINE_RIGHT);
         topPane.add(authLabel,0 ,1);
         tagsLabel.setText("Tags:");
-        tagsLabel.setAlignment(Pos.BASELINE_RIGHT);
         topPane.add(tagsLabel,0 ,2);
         commentLabel.setText("Comments:");
-        commentLabel.setAlignment(Pos.TOP_RIGHT);
         topPane.add(commentLabel,0 ,3);
 
-        TextField lang = new TextField();
+        lang = new TextField();
         if(snippet.getLanguage() != null){lang.setText(snippet.getLanguage());}
-        TextField author = new TextField();
+        author = new TextField();
         if(snippet.getWriter() != null){author.setText(snippet.getWriter());}
-        TextField tags = new TextField();
+        tags = new TextField();
         String tag =  "";
         if(snippet.getTags() != null)
         {
@@ -120,7 +124,7 @@ public class UpdateSnippet implements EventHandler<ActionEvent>
             }
         }
         tags.setText(tag);
-        TextArea comments = new TextArea();
+        comments = new TextArea();
         if(snippet.getComments() != null){comments.setText(snippet.getComments());}
         comments.setMaxHeight(50);
         topPane.add(lang,1 ,0);
@@ -129,7 +133,7 @@ public class UpdateSnippet implements EventHandler<ActionEvent>
         topPane.add(comments, 1, 3);
 
         //build bottom pane
-        TextArea code = new TextArea();
+        code = new TextArea();
         code.setText(snippet.getSnippet());
         bottomPane.add(code, 0,0);
         Button updateBtn = new Button("Update");

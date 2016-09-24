@@ -103,6 +103,7 @@ public class Controller
     public static boolean editSnippets(CodeSection snippet)
     {
         theSnippetLibrary.updateSnippet(snippet);
+        saveFile();
         if(snippet.toString().equals(theSnippetLibrary.getSnippetById(snippet.getId()).toString()))
         {
             return true;
@@ -261,7 +262,7 @@ public class Controller
     {
         languages = new ArrayList<>();
         String[] langList = {"java", "javascript", "php", "c", "c++", "c#", "angular.js", "node.js", "android studio",
-                "sql", "clojure", "python", "ruby", "react.js", "springMVC"};
+                "sql", "clojure", "python", "ruby", "react.js", "springMVC", ".NET"};
         for(String l: langList)
         {
             languages.add(l);
@@ -291,7 +292,5 @@ public class Controller
         }
         return false;
     }
-
-
 
 }

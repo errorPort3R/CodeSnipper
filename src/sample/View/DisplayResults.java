@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import sample.Controller.Controller;
@@ -28,7 +29,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
 {
     private int STD_WIDTH = 800;
     private int STD_HEIGHT = 400;
-    private Stage theStage;
+    //private Stage theStage;
     protected Stage selectionStage = null;
 
 
@@ -50,11 +51,11 @@ public class DisplayResults implements EventHandler<ActionEvent>
         public void handle(ActionEvent event)
         {
             snippet = mysnippet;
-            theStage.hide();
+            selectionStage.hide();
             UpdateSnippet updatepage = null;
             try
             {
-                updatepage = new UpdateSnippet(theStage, mysnippet, search);
+                updatepage = new UpdateSnippet(selectionStage, mysnippet, search);
             } catch (FileNotFoundException e)
             {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -78,11 +79,11 @@ public class DisplayResults implements EventHandler<ActionEvent>
         public void handle(ActionEvent event)
         {
             snippet = mysnippet;
-            theStage.hide();
+            selectionStage.hide();
             ViewSnippet viewpage = null;
             try
             {
-                viewpage = new ViewSnippet(theStage, mysnippet, search);
+                viewpage = new ViewSnippet(selectionStage, mysnippet, search);
             } catch (FileNotFoundException e)
             {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -111,10 +112,11 @@ public class DisplayResults implements EventHandler<ActionEvent>
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK)
             {
-                Controller.deleteSnippet(snippet);
-
-                //selectionStage.hide();
-
+                Controller.deleteSnippet(mysnippet);
+                search.remove(mysnippet);
+                DisplayResults ds = new DisplayResults(search, selectionStage);
+                selectionStage.hide();
+                ds.show();
             }
             else
             {
@@ -129,7 +131,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
         search = new ArrayList<>();
         search = codeSearchList;
         selectionStage = stage;
-        theStage = new Stage();
+
         GridPane pane = new GridPane();
         GridPane topPane = new GridPane();
         GridPane bottomPane = new GridPane();
@@ -143,8 +145,8 @@ public class DisplayResults implements EventHandler<ActionEvent>
         buttonPane.setPadding(new Insets(10,10,10,10));
         Scene scene = new Scene(pane);
         scene.getStylesheets().add("/sample/Resources/style.css");
-        theStage.setScene(scene);
-        theStage.setTitle("Search Results");
+        selectionStage.setScene(scene);
+        selectionStage.setTitle("Search Results");
         pane.setHgap(5);
         pane.setVgap(5);
         pane.setPadding(new Insets(10,10,10,10));
@@ -208,6 +210,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
             language.setText("Lang: " + c.getLanguage());
             Text tags = new Text();
             tags.setText("Tags: " + c.getTags());
+            tags.setFill(Color.RED);
             Text writer = new Text();
             writer.setText("Writer: " + c.getWriter());
             TextArea code = new TextArea();
@@ -275,7 +278,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
     public void show()
     {
-        theStage.show();
+        selectionStage.show();
     }
 
     public void handle(ActionEvent event)
@@ -283,8 +286,8 @@ public class DisplayResults implements EventHandler<ActionEvent>
         SelectionUI selectionUI;
         try
         {
-            selectionUI = new SelectionUI(theStage);
-            theStage.hide();
+            selectionUI = new SelectionUI(selectionStage);
+            selectionStage.hide();
             selectionUI.show();
 
         } catch (FileNotFoundException e)
