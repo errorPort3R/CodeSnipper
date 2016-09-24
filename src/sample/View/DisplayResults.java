@@ -1,7 +1,5 @@
 package sample.View;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,10 +13,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import sample.Controller.Controller;
 import sample.Model.CodeSection;
-import sample.Model.SnippetLibrary;
 
 import java.io.FileNotFoundException;
-import java.lang.Character.UnicodeBlock;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -33,29 +29,33 @@ public class DisplayResults implements EventHandler<ActionEvent>
     private int STD_WIDTH = 800;
     private int STD_HEIGHT = 400;
     private Stage theStage;
-    private ListView topPane;
     protected Stage selectionStage = null;
-    private TableView<CodeSection> snippetList = new TableView<>();
-    ObservableList<GridPane> olCodeSearchList;
+
+
     private ArrayList<Button> viewBtnList;
     private ArrayList<Button> updateBtnList;
     private ArrayList<Button> deleteBtnList;
     private ArrayList<GridPane> snippetPaneList;
+    private ArrayList<CodeSection> search;
     private CodeSection snippet = new CodeSection();
-    static SnippetLibrary theSnippetLibrary = SnippetLibrary.getTheSnippetLibrary();
 
     public class updateButtonHandler implements EventHandler<ActionEvent>
     {
+        private CodeSection mysnippet;
+        public updateButtonHandler(CodeSection snippet)
+        {
+            mysnippet = snippet;
+        }
 
-//        updateButtonHandler(CodeSection code)
-//        {
-//            snippet = code;
-//        }
         public void handle(ActionEvent event)
         {
-            snippet= new CodeSection();
-            snippet = snippetList.selectionModelProperty().getValue().getSelectedItem();
-            if(snippet == null)
+            snippet = mysnippet;
+            theStage.hide();
+            UpdateSnippet updatepage = null;
+            try
+            {
+                updatepage = new UpdateSnippet(theStage, mysnippet, search);
+            } catch (FileNotFoundException e)
             {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("DANGER WILL ROBINSON!");
@@ -63,12 +63,7 @@ public class DisplayResults implements EventHandler<ActionEvent>
                 alert.setContentText("We're not sure what went wrong.  Honestly, you should never have seen this warning, but here we are.  Click okay to try again.");
                 alert.showAndWait();
             }
-            else
-            {
-                Controller.editSnippets(snippet);
-                UpdateSnippet updatepage = new UpdateSnippet();
-                updatepage.show();
-            }
+            updatepage.show();
         }
     }
 
@@ -87,10 +82,14 @@ public class DisplayResults implements EventHandler<ActionEvent>
             ViewSnippet viewpage = null;
             try
             {
-                viewpage = new ViewSnippet(theStage, mysnippet);
+                viewpage = new ViewSnippet(theStage, mysnippet, search);
             } catch (FileNotFoundException e)
             {
-                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("DANGER WILL ROBINSON!");
+                alert.setHeaderText("Something went terribly wrong.");
+                alert.setContentText("We're not sure what went wrong.  Honestly, you should never have seen this warning, but here we are.  Click okay to try again.");
+                alert.showAndWait();
             }
             viewpage.show();
         }
@@ -98,10 +97,11 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
     public class deleteButtonHandler implements EventHandler<ActionEvent>
     {
-//        deleteButtonHandler(CodeSection code)
-//        {
-//            snippet = code;
-//        }
+        private CodeSection mysnippet;
+        public deleteButtonHandler(CodeSection snippet)
+        {
+            mysnippet = snippet;
+        }
         public void handle(ActionEvent event)
         {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -112,7 +112,9 @@ public class DisplayResults implements EventHandler<ActionEvent>
             if (result.get() == ButtonType.OK)
             {
                 Controller.deleteSnippet(snippet);
-                olCodeSearchList.remove(snippet);
+
+                //selectionStage.hide();
+
             }
             else
             {
@@ -124,10 +126,12 @@ public class DisplayResults implements EventHandler<ActionEvent>
     // start of displayResults page
     public DisplayResults(ArrayList<CodeSection> codeSearchList, Stage stage)
     {
+        search = new ArrayList<>();
+        search = codeSearchList;
         selectionStage = stage;
         theStage = new Stage();
         GridPane pane = new GridPane();
-        topPane = new ListView();
+        GridPane topPane = new GridPane();
         GridPane bottomPane = new GridPane();
         pane.add(topPane, 0, 0);
         pane.add(bottomPane, 0, 1);
@@ -238,12 +242,10 @@ public class DisplayResults implements EventHandler<ActionEvent>
             snippetPaneList.add(insetPane);
 
             //add data to lists
-            viewBtnList.get(i).setUserData(c.getId());
+            //viewBtnList.get(i).setUserData(c.getId());
             viewBtnList.get(i).setOnAction(new viewButtonHandler(c));
-            updateBtnList.get(i).setOnAction(new updateButtonHandler());
-            deleteBtnList.get(i).setOnAction(new deleteButtonHandler());
-
-
+            updateBtnList.get(i).setOnAction(new updateButtonHandler(c));
+            deleteBtnList.get(i).setOnAction(new deleteButtonHandler(c));
 
             //alternate colors
             i++;
@@ -260,12 +262,11 @@ public class DisplayResults implements EventHandler<ActionEvent>
             insetInnerPane = new GridPane();
 
         }
-        olCodeSearchList = FXCollections.observableArrayList(snippetPaneList);
 
         //add outsetPane to scrollPane
-        topPane.setMinSize(STD_WIDTH, STD_HEIGHT);
-//        scrollPane.setContent(outsetPane);
-        topPane.setItems(olCodeSearchList);
+        scrollPane.setMinSize(STD_WIDTH, STD_HEIGHT);
+        scrollPane.setContent(outsetPane);
+        topPane.add(scrollPane, 0, 0);
 
         Button cancelBtn = new Button("Go Back");
         bottomPane.add(cancelBtn, 0, 0);
@@ -279,8 +280,23 @@ public class DisplayResults implements EventHandler<ActionEvent>
 
     public void handle(ActionEvent event)
     {
-        selectionStage.show();
-        theStage.hide();
+        SelectionUI selectionUI;
+        try
+        {
+            selectionUI = new SelectionUI(theStage);
+            theStage.hide();
+            selectionUI.show();
+
+        } catch (FileNotFoundException e)
+        {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("DANGER WILL ROBINSON!");
+            alert.setHeaderText("Something went terribly wrong.");
+            alert.setContentText("We're not sure what went wrong.  Honestly, you should never have seen this warning, but here we are.  Click okay to try again.");
+            alert.showAndWait();
+        }
+
+
     }
 
     public CodeSection getSnippet()

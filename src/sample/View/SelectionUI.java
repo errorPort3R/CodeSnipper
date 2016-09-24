@@ -35,7 +35,7 @@ public class SelectionUI implements EventHandler<ActionEvent>
     private TextArea code;
     private TextArea comments;
     private ToggleGroup searchGroup;
-    ObservableList<String> oListLanguages = FXCollections.observableArrayList(Controller.getAllLanguages());
+    private ObservableList<String> oListLanguages = FXCollections.observableArrayList(Controller.getAllLanguages());
 
     public class searchBtnHandler implements EventHandler<ActionEvent>
     {
@@ -45,6 +45,10 @@ public class SelectionUI implements EventHandler<ActionEvent>
             selectionStage.hide();
             boolean selectedInclusive = false;
             String lang = null;
+            if (language.getValue().toString().equals("Language"))
+            {
+                language.setValue("");
+            }
             if(!language.getValue().toString().isEmpty())
             {
                 lang = language.getValue().toString();
@@ -104,9 +108,12 @@ public class SelectionUI implements EventHandler<ActionEvent>
     {
         public void handle(ActionEvent event)
         {
-            oListLanguages.add(newLanguage.getText());
-            Collections.sort(oListLanguages);
-            newLanguage.clear();
+            if(!newLanguage.getText().toString().isEmpty())
+            {
+                oListLanguages.add(newLanguage.getText());
+                Collections.sort(oListLanguages);
+                newLanguage.clear();
+            }
         }
     }
 
@@ -150,7 +157,7 @@ public class SelectionUI implements EventHandler<ActionEvent>
 
         Collections.sort(oListLanguages);
         language = new ComboBox(oListLanguages);
-        language.setPromptText("Language");
+        language.setValue("Language");
         Button langPlusBtn = new Button("+");
         newLanguage = new TextField();
         newLanguage.setPromptText("New Language");
@@ -175,7 +182,6 @@ public class SelectionUI implements EventHandler<ActionEvent>
 
 
         //TOP INSERT PANE END
-
         pane.add(topInsertPane, 0,1);
 
         code = new TextArea();
@@ -187,8 +193,6 @@ public class SelectionUI implements EventHandler<ActionEvent>
         comments.setPromptText("Comments");
         comments.setMaxWidth(150.0);
         bottomInsertPane.add(comments, 1, 2);
-
-
 
         pane.add(bottomInsertPane, 0,4);
 

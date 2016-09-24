@@ -103,7 +103,7 @@ public class Controller
     public static boolean editSnippets(CodeSection snippet)
     {
         theSnippetLibrary.updateSnippet(snippet);
-        if(snippet.toString().equals(theSnippetLibrary.getSnippetById(snippet.getId())))
+        if(snippet.toString().equals(theSnippetLibrary.getSnippetById(snippet.getId()).toString()))
         {
             return true;
         }
@@ -269,9 +269,12 @@ public class Controller
         if (theSnippetLibrary.hasData())
         {
             ArrayList<String> snipLangList = theSnippetLibrary.getLanguages(languages);
-            for(String lang: snipLangList)
+            if (snipLangList.size()<theSnippetLibrary.getLanguages(languages).size())
             {
-                languages.add(lang);
+                for (String lang : snipLangList)
+                {
+                    languages.add(lang);
+                }
             }
         }
         return languages;
