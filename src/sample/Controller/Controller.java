@@ -248,6 +248,10 @@ public class Controller
                         }
                     }
                 }
+                if (tags.length()==0 && author.length()==0 && lang.length()==0 && keywords.length()==0)
+                {
+                    removalList.add(code);
+                }
             }
         }
         for (CodeSection r : removalList)
