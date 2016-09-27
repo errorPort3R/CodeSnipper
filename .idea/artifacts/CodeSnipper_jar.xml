@@ -3,8 +3,6 @@
     <output-path>$PROJECT_DIR$/out/artifacts/CodeSnipper_jar</output-path>
     <root id="archive" name="CodeSnipper.jar">
       <element id="module-output" name="CodeSnipper" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/de/hhu/stups/unicode/2.6.2/unicode-2.6.2.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jodd/jodd-json/3.7.1/jodd-json-3.7.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jodd/jodd-core/3.7.1/jodd-core-3.7.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jodd/jodd-bean/3.7.1/jodd-bean-3.7.1.jar" path-in-jar="/" />
