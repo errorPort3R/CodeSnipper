@@ -21,12 +21,13 @@ public class Controller
 
     static SnippetLibrary theSnippetLibrary = SnippetLibrary.getTheSnippetLibrary();
     public static final String FILENAME = "snippets.json";
+    public static final String FILE_LOCATION = System.getProperty("user.home") + File.separator;
     private static ArrayList<String> languages;
 
     //initial load from JSON file
     public static void initialLoad() throws FileNotFoundException
     {
-        File f = new File(FILENAME);
+        File f = new File((FILE_LOCATION + FILENAME));
         if (f.canRead())
         {
             Scanner fileScanner = new Scanner(f);
@@ -86,7 +87,7 @@ public class Controller
     {
         JsonSerializer serializer = new JsonSerializer();
         String json = serializer.include("*").serialize(theSnippetLibrary);
-        File f = new File(FILENAME);
+        File f = new File((FILE_LOCATION + FILENAME));
         try
         {
             FileWriter fw = new FileWriter(f);
@@ -148,10 +149,10 @@ public class Controller
                 }
             }
 
-            if (code.getWriter().equalsIgnoreCase(author) ||
-                code.getLanguage().equalsIgnoreCase(lang) ||
-                code.getSnippet().contains(keywords) ||
-                code.getComments().contains(keywords))
+            if ((code.getWriter().equalsIgnoreCase(author) && !author.isEmpty()) ||
+                (code.getLanguage().equalsIgnoreCase(lang) && !lang.isEmpty()) ||
+                (code.getSnippet().contains(keywords) && !keywords.isEmpty()) ||
+                (code.getComments().contains(keywords) && !keywords.isEmpty()))
             {
                 if (!codeSearch.contains(code))
                 {
